@@ -1,0 +1,39 @@
+#clima { grid-column: span 1; max-width: 380px; }
+
+.tabla-clima-wrap { overflow-x: auto; }
+
+.tabla-clima {
+  border-collapse: collapse;
+  margin-top: 0.5rem;
+  table-layout: fixed;
+  width: 720px; /* 8 columnas de 90px — ancho real, no se achica */
+}
+
+.tabla-clima th, .tabla-clima td {
+  padding: 0.5rem 0.75rem;
+  text-align: center;
+  font-size: 0.85rem;
+  border-bottom: 1px solid var(--borde);
+  width: 90px;
+  vertical-align: middle;
+}
+
+.tabla-clima th {
+  text-align: left;
+  color: var(--texto);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.tabla-clima tr:last-child th,
+.tabla-clima tr:last-child td { border-bottom: none; }
+
+.fila-cabecera th h2 { margin: 0; }
+
+.fila-cabecera .emoji { font-size: 2.2rem; line-height: 1.1; }
+
+.fila-cabecera .dia-nombre {
+  font-size: 0.85rem;
+  color: var(--texto);
+  margin-top: 0.15rem;
+}

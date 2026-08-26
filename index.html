@@ -4,8 +4,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>pagina de inicio</title>
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/clima.css">
+    <link rel="stylesheet" href="css/agenda.css">
 </head>
 <body>
-    <h1>Bienvenido a mi página de inicio</h1>
+<!--pagina de inicio personalizada
+titulo de bienvenida con hora local de españa y colombia
+cajon con agenda personal mensual
+cajon con lista de tareas pendientes
+cajon con informacion de equipos de futbol de interes
+cajon con cambio de divisa 
+cajon con noticias de interes
+cajon con pronostico del clima
+esta pagina estara alojada en github pages y en github actions un robot enviara un json con python para actualizar diariamente esta pagina en mi pagina de inicio de mi navegador
+-->
+
+<header>
+    <h1>Mi Panel</h1>
+</header>
+
+  <main class="panel">
+
+    <section class="cajon" id="clima">
+      <h2>Clima</h2>
+      <p>Hoy: 28°C, soleado</p>
+    </section>
+
+    <section class="cajon" id="dolar">
+      <h2>Dólar</h2>
+      <p>1 USD = 0.92 EUR</p>
+    </section>
+
+    <section class="cajon" id="agenda">
+      <h2>Agenda</h2>
+      <p>Lunes: turno mañana</p>
+      <p>Martes: descanso</p>
+    </section>
+
+    <section class="cajon" id="partidos">
+      <h2>Partidos</h2>
+      <p>Real Madrid vs Barcelona — Sábado 20:00</p>
+    </section>
+
+  </main>
+<script src="js/clima.js"></script>
+<script src="js/datos-festivos.js"></script>
+<script src="js/datos-agenda.js"></script>
+<script src="js/agenda.js"></script>
 </body>
 </html>

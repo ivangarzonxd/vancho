@@ -1,0 +1,79 @@
+#agenda { grid-column: span 4; }
+
+.semana-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.3rem;
+  margin-top: 0.5rem;
+}
+
+.dia-semana {
+  text-align: center;
+  font-size: 0.7rem;
+  color: var(--texto-secundario);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.dias-scroll {
+  max-height: 13.5rem; /* ~3 filas visibles, el resto con scroll */
+  overflow-y: auto;
+  margin-top: 0.3rem;
+}
+
+.calendario {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.3rem;
+}
+
+.dia-calendario {
+  height: 4.2rem; /* espacio para 3-4 renglones cuando metamos notas */
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 0.3rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  background: var(--bg);
+}
+
+.dia-calendario.pasado {
+  opacity: 0.35;
+}
+
+.dia-calendario.hoy {
+  background: var(--acento);
+  color: #0f1115;
+  font-weight: 700;
+}
+
+.dia-calendario.frontera-mes {
+  border-left: 2px solid var(--acento);
+}
+
+.numero-dia { font-weight: 600; }
+
+.eventos-dia {
+  margin-top: 0.15rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  overflow-y: auto;
+  max-height: 2.9rem;
+  width: 100%;
+}
+
+.fila-evento {
+  font-size: 0.6rem;
+  line-height: 1.15;
+  border-left: 3px solid;
+  padding-left: 0.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--texto-secundario);
+}

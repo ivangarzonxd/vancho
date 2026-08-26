@@ -1,0 +1,78 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0f1115;
+  --bg-cajon: #1a1d24;
+  --borde: #2a2e37;
+  --texto: #e4e6eb;
+  --texto-secundario: #9aa0ac;
+  --acento: #7c9eff;
+}
+
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--texto);
+  padding: 2rem;
+}
+
+header h1 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+}
+
+.panel {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.cajon {
+  background: var(--bg-cajon);
+  border: 1px solid var(--borde);
+  border-radius: 16px;
+  padding: 1rem;
+  transition: border-color 0.2s ease;
+}
+
+.cajon:hover { border-color: var(--acento); }
+
+.cajon h2 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--acento);
+  margin-bottom: 1rem;
+}
+
+.cajon p {
+  color: var(--texto-secundario);
+  line-height: 1.5;
+}
+
+
+/* Scrollbar delgado y discreto, para cualquier elemento con scroll en toda la página */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--borde) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--borde);
+  border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--acento);
+}
