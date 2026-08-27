@@ -1,3 +1,9 @@
+/* ================================================================
+   partidos.css
+   Cajon de partidos: tabla con el proximo partido (rival, fecha, hora)
+   de cada equipo de interes, ordenada por el mas proximo primero.
+   ================================================================ */
+
 #partidos { grid-column: span 2; }
 .tabla-partidos-wrap { overflow-x: auto; }
 .tabla-partidos { border-collapse: collapse; margin-top: 0.5rem; width: 100%; }

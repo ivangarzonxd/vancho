@@ -1,3 +1,9 @@
+/* ================================================================
+   tareas.css
+   Cajon de tareas pendientes sin fecha fija, ordenadas por
+   importancia (la mas urgente arriba).
+   ================================================================ */
+
 #tareas { grid-column: span 1; }
 .lista-tareas {
   list-style: none;

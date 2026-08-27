@@ -1,20 +1,7 @@
 function cargarTareas() {
-  // Formato esperado en el titulo del evento: "Tarea: N - texto" (N = prioridad, 1 = mas urgente).
-  // La fecha del evento en Google Calendar no se usa para nada aqui, solo el numero de prioridad.
-  const tareas = eventosCalendario
-    .filter(e => e.tipo === "tarea")
-    .map(e => {
-      const match = (e.nota || "").match(/^\s*(\d+)\s*-\s*(.*)$/);
-      return {
-        prioridad: match ? parseInt(match[1], 10) : Infinity,
-        texto: match ? match[2] : (e.nota || ""),
-      };
-    })
-    .sort((a, b) => a.prioridad - b.prioridad);
+  const tareas = typeof tareasPendientes !== "undefined" ? tareasPendientes : [];
 
-  const filas = tareas.map(t =>
-    `<li class="tarea-item"><span class="tarea-texto">${t.texto}</span></li>`
-  );
+  const filas = tareas.map(texto => `<li class="tarea-item">${texto}</li>`);
 
   document.getElementById("tareas").innerHTML = `
     <h2>Tareas</h2>

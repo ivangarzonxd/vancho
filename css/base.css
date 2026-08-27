@@ -1,5 +1,17 @@
+/* ================================================================
+   base.css
+   Estilos COMPARTIDOS por toda la pagina: colores, tipografia base,
+   la caja generica de cualquier cajon, su titulo, y el layout general
+   (cuadricula + responsive). Si algo debe verse igual en TODOS los
+   cajones (titulo, borde, fondo, etc.), va aqui y NO en el css de
+   cada cajon — asi un solo cambio afecta a todos a la vez.
+   Lo que es propio de un cajon especifico (su tabla, sus tarjetas,
+   su span de columnas) vive en el archivo css de ESE cajon.
+   ================================================================ */
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* Paleta de colores: cambiar un valor aqui lo cambia en toda la pagina */
 :root {
   --bg: #0f1115;
   --bg-cajon: #1a1d24;
@@ -9,6 +21,7 @@
   --acento: #7c9eff;
 }
 
+/* Fondo, color de texto y tipografia base de toda la pagina */
 body {
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
   background: var(--bg);
@@ -16,12 +29,14 @@ body {
   padding: 1.25rem;
 }
 
+/* Titulo grande de arriba de la pagina (no el de cada cajon) */
 header h1 {
   font-size: 1.25rem;
   font-weight: 600;
   margin-bottom: 0.75rem;
 }
 
+/* Contenedor de todos los cajones. En escritorio se convierte en cuadricula (ver media query abajo) */
 .panel {
   display: flex;
   flex-direction: column;
@@ -33,6 +48,8 @@ header h1 {
   gap: 0.6rem;
 }
 
+/* La caja generica de CUALQUIER cajon (fondo, borde, esquinas, padding).
+   Todos los cajones la heredan; ninguno deberia redefinir esto en su propio css. */
 .cajon {
   background: var(--bg-cajon);
   border: 1px solid var(--borde);
@@ -45,6 +62,8 @@ header h1 {
 
 .cajon:hover { border-color: var(--acento); }
 
+/* Titulo de CUALQUIER cajon ("Clima", "Agenda", "Tareas"...). Un solo cambio aqui
+   afecta a los titulos de todos los cajones a la vez. */
 .cajon h2 {
   font-size: 0.85rem;
   font-weight: 600;
@@ -55,9 +74,21 @@ header h1 {
   flex-shrink: 0;
 }
 
+/* Texto de apoyo generico dentro de un cajon (no todos lo usan) */
 .cajon p {
   color: var(--texto-secundario);
   line-height: 1.5;
+}
+
+/* Etiqueta chica y discreta, reutilizable en cualquier cajon: nombres de dia,
+   etiquetas de dato ("1 EUR", "Hora Colombia"), textos de apoyo en mayuscula.
+   Ejemplo de uso: <div class="dia-semana etiqueta-secundaria">Lun</div> */
+.etiqueta-secundaria {
+  font-size: 0.7rem;
+  color: var(--texto-secundario);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
 }
 
 

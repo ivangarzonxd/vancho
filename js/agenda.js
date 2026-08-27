@@ -64,13 +64,13 @@ for (let i = 0; i < totalDias; i++) {
 document.getElementById("agenda").innerHTML = `
   <h2>Agenda — ${tituloMes}</h2>
   <div class="semana-header">
-    <div class="dia-semana">Lun</div>
-    <div class="dia-semana">Mar</div>
-    <div class="dia-semana">Mié</div>
-    <div class="dia-semana">Jue</div>
-    <div class="dia-semana">Vie</div>
-    <div class="dia-semana">Sáb</div>
-    <div class="dia-semana">Dom</div>
+    <div class="dia-semana etiqueta-secundaria">Lun</div>
+    <div class="dia-semana etiqueta-secundaria">Mar</div>
+    <div class="dia-semana etiqueta-secundaria">Mié</div>
+    <div class="dia-semana etiqueta-secundaria">Jue</div>
+    <div class="dia-semana etiqueta-secundaria">Vie</div>
+    <div class="dia-semana etiqueta-secundaria">Sáb</div>
+    <div class="dia-semana etiqueta-secundaria">Dom</div>
   </div>
   <div class="dias-scroll">
     <div class="calendario">${celdas}</div>

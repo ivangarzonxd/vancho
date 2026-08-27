@@ -1,5 +1,14 @@
+/* ================================================================
+   agenda.css
+   Cajon de la agenda: cabecera con los 7 dias de la semana y una
+   cuadricula de 6 semanas (calendario) con scroll vertical propio.
+   Cada dia muestra sus eventos (festivos + calendario de Google),
+   coloreados segun su tipo (trabajo / evento / festivo).
+   ================================================================ */
+
 #agenda { grid-column: span 5; }
 
+/* Fila con los nombres de los 7 dias, arriba del calendario */
 .semana-header {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -7,14 +16,13 @@
   margin-top: 0.5rem;
 }
 
+/* El texto de "Lun, Mar, Mie..." ya usa .etiqueta-secundaria (ver base.css);
+   aqui solo se ajusta el centrado, que es propio de esta cuadricula */
 .dia-semana {
   text-align: center;
-  font-size: 0.7rem;
-  color: var(--texto-secundario);
-  font-weight: 600;
-  text-transform: uppercase;
 }
 
+/* Zona con scroll vertical propio: aqui vive el calendario de 6 semanas */
 .dias-scroll {
   flex: 1;
   min-height: 0;
@@ -22,12 +30,14 @@
   margin-top: 0.3rem;
 }
 
+/* Cuadricula de 7 columnas x 6 filas (un dia por celda) */
 .calendario {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 0.3rem;
 }
 
+/* Una celda de un dia individual del calendario */
 .dia-calendario {
   height: 4.2rem; /* espacio para 3-4 renglones cuando metamos notas */
   width: 100%;
@@ -58,6 +68,7 @@
 
 .numero-dia { font-weight: 600; }
 
+/* Lista de eventos de ese dia, con su propio scroll interno si no caben */
 .eventos-dia {
   margin-top: 0.15rem;
   display: flex;
@@ -68,6 +79,7 @@
   width: 100%;
 }
 
+/* Un evento individual dentro de un dia (color = tipo de evento) */
 .fila-evento {
   font-size: 0.6rem;
   line-height: 1.15;

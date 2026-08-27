@@ -17,11 +17,11 @@ async function cargarOtros() {
     <h2>Otros</h2>
     <div class="otros-contenido">
       <div class="otros-item">
-        <span class="otros-etiqueta">1 EUR</span>
+        <span class="otros-etiqueta etiqueta-secundaria">1 EUR</span>
         <span class="otros-valor">${valorCambio}</span>
       </div>
       <div class="otros-item">
-        <span class="otros-etiqueta">Hora Colombia</span>
+        <span class="otros-etiqueta etiqueta-secundaria">Hora Colombia</span>
         <span class="otros-valor" id="otros-hora">${horaColombiaTexto()}</span>
       </div>
     </div>

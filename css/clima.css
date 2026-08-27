@@ -1,3 +1,11 @@
+/* ================================================================
+   clima.css
+   Cajon del clima: una tarjeta vertical por cada uno de los proximos
+   7 dias (fecha, emoji, temperatura, probabilidad+hora de lluvia y
+   sugerencia de ropa). Si no caben todas las tarjetas, este cajon
+   scrollea horizontalmente (la unica excepcion junto con agenda).
+   ================================================================ */
+
 #clima { grid-column: span 4; }
 
 #clima {
@@ -5,6 +13,7 @@
   flex-direction: column;
 }
 
+/* Envoltorio con el scroll horizontal cuando no caben las 7 tarjetas */
 .clima-dias-wrap {
   flex: 1;
   min-height: 0;
@@ -12,12 +21,14 @@
   overflow-y: hidden;
 }
 
+/* Fila con una tarjeta por dia */
 .clima-dias {
   display: flex;
   gap: 0.6rem;
   height: 100%;
 }
 
+/* Tarjeta individual de un dia */
 .dia-clima {
   flex: 0 0 auto;
   width: 5.5rem;
@@ -54,6 +65,7 @@
   color: var(--texto-secundario);
 }
 
+/* Porcentaje de lluvia arriba, hora del chubasco abajo (si aplica) */
 .dia-lluvia {
   display: flex;
   flex-direction: column;
