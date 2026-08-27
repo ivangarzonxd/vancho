@@ -43,7 +43,7 @@ for componente in calendario.walk():
         fecha = dtstart
         hora = None
 
-    if fecha < hoy or fecha > limite:
+    if tipo != "tarea" and (fecha < hoy or fecha > limite):
         continue
 
     eventos.append({"fecha": fecha.isoformat(), "tipo": tipo, "nota": nota, "hora": hora})

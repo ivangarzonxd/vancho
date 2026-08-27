@@ -1,39 +1,80 @@
-#clima { grid-column: span 1; max-width: 380px; }
+#clima { grid-column: span 4; }
 
-.tabla-clima-wrap { overflow-x: auto; }
-
-.tabla-clima {
-  border-collapse: collapse;
-  margin-top: 0.5rem;
-  table-layout: fixed;
-  width: 720px; /* 8 columnas de 90px — ancho real, no se achica */
+#clima {
+  display: flex;
+  flex-direction: column;
 }
 
-.tabla-clima th, .tabla-clima td {
-  padding: 0.5rem 0.75rem;
+.clima-dias-wrap {
+  flex: 1;
+  min-height: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.clima-dias {
+  display: flex;
+  gap: 0.6rem;
+  height: 100%;
+}
+
+.dia-clima {
+  flex: 0 0 auto;
+  width: 5.5rem;
+  background: var(--bg);
+  border-radius: 10px;
+  padding: 0.75rem 0.4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
   text-align: center;
-  font-size: 0.85rem;
-  border-bottom: 1px solid var(--borde);
-  width: 90px;
-  vertical-align: middle;
+  gap: 0.35rem;
 }
 
-.tabla-clima th {
-  text-align: left;
-  color: var(--texto);
-  font-weight: 700;
+.dia-fecha {
+  font-size: 0.7rem;
+  color: var(--texto-secundario);
+  text-transform: capitalize;
   white-space: nowrap;
 }
 
-.tabla-clima tr:last-child th,
-.tabla-clima tr:last-child td { border-bottom: none; }
+.dia-emoji {
+  font-size: 1.9rem;
+  line-height: 1;
+}
 
-.fila-cabecera th h2 { margin: 0; }
+.dia-temp {
+  font-size: 0.9rem;
+  font-weight: 700;
+}
 
-.fila-cabecera .emoji { font-size: 2.2rem; line-height: 1.1; }
+.dia-temp .temp-min {
+  font-weight: 400;
+  color: var(--texto-secundario);
+}
 
-.fila-cabecera .dia-nombre {
-  font-size: 0.85rem;
-  color: var(--texto);
-  margin-top: 0.15rem;
+.dia-lluvia {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.2;
+}
+
+.lluvia-pct {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--acento);
+}
+
+.lluvia-hora {
+  font-size: 0.6rem;
+  color: var(--texto-secundario);
+  white-space: nowrap;
+}
+
+.dia-ropa {
+  font-size: 0.65rem;
+  color: var(--texto-secundario);
+  line-height: 1.2;
 }

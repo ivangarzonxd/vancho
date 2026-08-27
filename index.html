@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/clima.css">
     <link rel="stylesheet" href="css/agenda.css">
+    <link rel="stylesheet" href="css/partidos.css">
+    <link rel="stylesheet" href="css/dolar.css">
+    <link rel="stylesheet" href="css/tareas.css">
 </head>
 <body>
 <!--pagina de inicio personalizada
@@ -26,31 +29,24 @@ esta pagina estara alojada en github pages y en github actions un robot enviara 
 
   <main class="panel">
 
-    <section class="cajon" id="clima">
-      <h2>Clima</h2>
-      <p>Hoy: 28°C, soleado</p>
-    </section>
-
-    <section class="cajon" id="dolar">
-      <h2>Dólar</h2>
-      <p>1 USD = 0.92 EUR</p>
-    </section>
-
-    <section class="cajon" id="agenda">
-      <h2>Agenda</h2>
-      <p>Lunes: turno mañana</p>
-      <p>Martes: descanso</p>
-    </section>
-
-    <section class="cajon" id="partidos">
-      <h2>Partidos</h2>
-      <p>Real Madrid vs Barcelona — Sábado 20:00</p>
-    </section>
+    <!-- El orden de estas secciones es el orden visual (izquierda a derecha, arriba a abajo,
+         se cierra una fila cada 4 unidades de "span"). Para reordenar un cajon, mueve su
+         <section> a otra posicion en esta lista. Para cambiar su tamaño horizontal, edita
+         "grid-column: span N" en el archivo css de ESE cajon (no aqui). -->
+    <section class="cajon" id="agenda"></section>
+    <section class="cajon" id="tareas"></section>
+    <section class="cajon" id="dolar"></section>
+    <section class="cajon" id="clima"></section>
+    <section class="cajon" id="partidos"></section>
 
   </main>
+<script src="js/auto-refresh.js"></script>
 <script src="js/clima.js"></script>
 <script src="js/datos-festivos.js"></script>
 <script src="js/datos-agenda.js"></script>
+<script src="js/tareas.js"></script>
 <script src="js/agenda.js"></script>
+<script src="js/partidos.js"></script>
+<script src="js/dolar.js"></script>
 </body>
 </html>

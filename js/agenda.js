@@ -1,4 +1,4 @@
-const eventosAgenda = [...eventosFestivos, ...eventosCalendario];
+const eventosAgenda = [...eventosFestivos, ...eventosCalendario.filter(e => e.tipo !== "tarea")];
 
 const hoy = new Date();
 hoy.setHours(0, 0, 0, 0);

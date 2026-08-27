@@ -13,38 +13,46 @@ body {
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
   background: var(--bg);
   color: var(--texto);
-  padding: 2rem;
+  padding: 1.25rem;
 }
 
 header h1 {
-  font-size: 1.6rem;
+  font-size: 1.25rem;
   font-weight: 600;
-  margin-bottom: 2rem;
+  margin-bottom: 0.75rem;
 }
 
 .panel {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.fila-cajones {
+  display: flex;
+  gap: 0.6rem;
 }
 
 .cajon {
   background: var(--bg-cajon);
   border: 1px solid var(--borde);
   border-radius: 16px;
-  padding: 1rem;
+  padding: 0.65rem;
   transition: border-color 0.2s ease;
+  flex: 1 1 0;
+  min-width: 0;
 }
 
 .cajon:hover { border-color: var(--acento); }
 
 .cajon h2 {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--acento);
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
+  flex-shrink: 0;
 }
 
 .cajon p {
@@ -53,7 +61,7 @@ header h1 {
 }
 
 
-/* Scrollbar delgado y discreto, para cualquier elemento con scroll en toda la página */
+/* Scrollbar delgado y discreto, para cualquier elemento con scroll en toda la pagina */
 * {
   scrollbar-width: thin;
   scrollbar-color: var(--borde) transparent;
@@ -75,4 +83,54 @@ header h1 {
 
 *::-webkit-scrollbar-thumb:hover {
   background: var(--acento);
+}
+
+/* Debajo de 901px: todo se apila en una columna, la pagina scrollea normal (como cualquier movil). */
+@media (max-width: 900px) {
+  .panel {
+    flex-direction: column;
+  }
+  .fila-cajones {
+    flex-direction: column;
+  }
+  .cajon {
+    height: auto;
+  }
+}
+
+/* Desde 901px: una cuadricula invisible de 4 columnas x 2 filas, cero scroll de pagina.
+   Cada cajon ocupa N columnas de esa cuadricula (ver "grid-column: span N" en el css propio
+   de cada cajon) — todas las columnas miden lo mismo, asi que "span 2" es siempre el doble
+   de ancho que "span 1", sin importar en que cajon lo pongas. El orden de las <section> en
+   index.html define el orden visual; con 4 columnas por fila, cada 4 unidades de "span"
+   se cierra una fila sola.
+   Las unicas excepciones con scroll propio son clima (horizontal) y agenda (vertical). */
+@media (min-width: 901px) {
+  html, body {
+    height: 100%;
+  }
+  body {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  header {
+    flex-shrink: 0;
+  }
+  .panel {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: 1fr 1fr;
+    gap: 0.6rem;
+    overflow: hidden;
+  }
+  .cajon {
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
 }

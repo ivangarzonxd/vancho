@@ -1,0 +1,6 @@
+#partidos { grid-column: span 2; }
+.tabla-partidos-wrap { overflow-x: auto; }
+.tabla-partidos { border-collapse: collapse; margin-top: 0.5rem; width: 100%; }
+.tabla-partidos th, .tabla-partidos td { padding: 0.3rem 0.5rem; text-align: left; font-size: 0.8rem; border-bottom: 1px solid var(--borde); }
+.tabla-partidos th { color: var(--texto-secundario); font-weight: 600; white-space: nowrap; }
+.tabla-partidos tr:last-child td { border-bottom: none; }

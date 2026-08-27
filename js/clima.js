@@ -38,41 +38,42 @@ fetch(`https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&d
         .filter(h => h.hora.startsWith(soloFecha) && h.prob >= 30);
 
       if (horas.length === 0) return "";
-      return ` (${horas[0].hora.slice(11,16)}–${horas[horas.length-1].hora.slice(11,16)})`;
+      const inicio = horas[0].hora.slice(11, 13);
+      const fin = horas[horas.length - 1].hora.slice(11, 13);
+      return `${inicio}-${fin}h`;
     };
 
-const dias = datos.daily.time.slice(0, 7);
+    const dias = datos.daily.time.slice(0, 7);
 
-const fila = (etiqueta, valores, claseFila = "") => `
-  <tr class="${claseFila}">
-    <th>${etiqueta}</th>
-    ${valores.map(v => `<td>${v}</td>`).join("")}
-  </tr>
-`;
+    const tarjetas = dias.map((fecha, i) => {
+      const nombreDia = new Date(fecha).toLocaleDateString("es-ES", { weekday: "short", day: "numeric" }).replace(",", "");
+      const emoji = emojiClima(datos.daily.weather_code[i]);
+      const max = datos.daily.temperature_2m_max[i];
+      const min = datos.daily.temperature_2m_min[i];
+      const pct = datos.daily.precipitation_probability_max[i];
+      const horaTexto = horaConLluvia(fecha);
+      const ropa = queMePonerme(max, pct);
 
-const cabeceras = dias.map((fecha, i) => {
-  const nombreDia = new Date(fecha).toLocaleDateString("es-ES", { weekday: "short", day: "numeric" }).replace(",", "");
-  return `
-    <div class="emoji">${emojiClima(datos.daily.weather_code[i])}</div>
-    <div class="dia-nombre">${nombreDia}</div>
-  `;
-});
+      return `
+        <div class="dia-clima">
+          <div class="dia-fecha">${nombreDia}</div>
+          <div class="dia-emoji">${emoji}</div>
+          <div class="dia-temp">⬆ ${max}° <span class="temp-min"><br> ⬇ ${min}°</span></div>
+          <div class="dia-lluvia">
+            <span class="lluvia-pct">${pct}%</span>
+            ${horaTexto ? `<span class="lluvia-hora">${horaTexto}</span>` : ""}
+          </div>
+          <div class="dia-ropa">${ropa}</div>
+        </div>
+      `;
+    });
 
-const maxMin = dias.map((_, i) => `${datos.daily.temperature_2m_max[i]}° / ${datos.daily.temperature_2m_min[i]}°`);
-const lluvia = dias.map((_, i) => `${datos.daily.precipitation_probability_max[i]}%${horaConLluvia(dias[i])}`);
-
-const ropa = dias.map((_, i) =>
-  queMePonerme(datos.daily.temperature_2m_max[i], datos.daily.precipitation_probability_max[i])
-);
-
-document.getElementById("clima").innerHTML = `
-  <div class="tabla-clima-wrap">
-    <table class="tabla-clima">
-      ${fila("<h2>Clima</h2>", cabeceras, "fila-cabecera")}
-      ${fila("Máx/Mín", maxMin)}
-      ${fila("Lluvia", lluvia)}
-      ${fila("¿Qué ponerte?", ropa)}
-    </table>
-  </div>
-`;
+    document.getElementById("clima").innerHTML = `
+      <h2>Clima</h2>
+      <div class="clima-dias-wrap">
+        <div class="clima-dias">
+          ${tarjetas.join("")}
+        </div>
+      </div>
+    `;
   });

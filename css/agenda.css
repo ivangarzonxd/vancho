@@ -1,4 +1,4 @@
-#agenda { grid-column: span 4; }
+#agenda { grid-column: span 5; }
 
 .semana-header {
   display: grid;
@@ -16,7 +16,8 @@
 }
 
 .dias-scroll {
-  max-height: 13.5rem; /* ~3 filas visibles, el resto con scroll */
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
   margin-top: 0.3rem;
 }
