@@ -2,11 +2,11 @@
    agenda.css
    Cajon de la agenda: cabecera con los 7 dias de la semana y una
    cuadricula de 6 semanas (calendario) con scroll vertical propio.
-   Cada dia muestra sus eventos (festivos + calendario de Google),
-   coloreados segun su tipo (trabajo / evento / festivo).
+   Cada dia muestra sus eventos (festivos + calendario de Google + partidos),
+   cada uno con un emoji segun su tipo (ver emojiTipo() en agenda.js).
    ================================================================ */
 
-/* Ancho del cajon dentro de la cuadricula: ocupa 5 columnas de 7 */
+/* Posicion del cajon en la cuadricula de 2 columnas: la ancha (col. 2), a toda altura (2 filas) */
 #agenda {
   grid-column: 2; 
   grid-row: span 2;
@@ -89,12 +89,11 @@
   width: 100%; /* ocupa todo el ancho de la celda */
 }
 
-/* Un evento individual dentro de un dia (color = tipo de evento) */
+/* Un evento individual dentro de un dia (el emoji al inicio indica el tipo) */
 .fila-evento {
   font-size: 0.6rem; /* tamaño chico, hay poco espacio por celda */
   line-height: 1.15; /* interlineado ajustado */
-  border-left: 3px solid; /* franja de color a la izquierda (el color lo pone el JS segun el tipo) */
-  padding-left: 0.25rem; /* separacion entre la franja de color y el texto */
+  padding-left: 0.25rem; /* pequeño respiro a la izquierda del emoji */
   white-space: nowrap; /* evita que el texto del evento se parta en dos lineas */
   overflow: hidden; /* esconde el texto que no cabe en el ancho de la celda */
   text-overflow: ellipsis; /* muestra "..." cuando el texto del evento se corta */

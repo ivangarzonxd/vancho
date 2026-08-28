@@ -34,13 +34,14 @@ const mesFin = cap(finVentana.toLocaleDateString("es-ES", { month: "long" }));
 // Titulo del cajon: un solo mes si la ventana no cruza de mes, o "Mes1 - Mes2" si cruza.
 const tituloMes = mesInicio === mesFin ? mesInicio : `${mesInicio} - ${mesFin}`;
 
-// Color de la franja izquierda de cada evento, segun su tipo.
-function colorTipo(tipo) {
+// Emoji de cada evento, segun su tipo.
+function emojiTipo(tipo) {
   switch (tipo) {
-    case "trabajo": return "#7c9eff"; // turnos de trabajo
-    case "evento": return "#f5c451"; // eventos normales de Calendar
-    case "festivo": return "#ef5b5b"; // festivos de datos-festivos.js
-    default: return "#9aa0ac"; // cualquier otro tipo no contemplado
+    case "trabajo": return "☎️"; // turnos de trabajo (logo de tu empresa)
+    case "evento": return "📌"; // eventos normales de Calendar
+    case "festivo": return "🎉"; // festivos de datos-festivos.js
+    case "partido": return "⚽"; // partidos de futbol
+    default: return "•"; // cualquier otro tipo no contemplado
   }
 }
 
@@ -69,16 +70,16 @@ for (let i = 0; i < totalDias; i++) {
     .filter(e => e.fecha === fechaStr)
     .sort((a, b) => (a.hora || "00:00").localeCompare(b.hora || "00:00"));
 
-  // Una fila de texto por cada evento del dia, con su color segun el tipo.
+  // Una fila de texto por cada evento del dia, con su emoji segun el tipo.
   const filasEventos = eventosDelDia.map(e => {
-    const color = colorTipo(e.tipo);
+    const emoji = emojiTipo(e.tipo);
     const texto = e.hora ? `${e.hora} ${e.nota || ""}` : (e.nota || "");
-    return `<div class="fila-evento" style="border-left-color:${color}">${texto}</div>`;
+    return `<div class="fila-evento">${emoji} ${texto}</div>`;
   }).join("");
 
   // La celda del dia: numero + lista de eventos, con las clases hoy/pasado/frontera-mes segun toque.
   celdas += `
-    <div class="dia-calendario ${esHoy ? "hoy" : ""} ${esPasado ? "pasado" : ""} ${esFronteraMes ? "frontera-mes" : ""}">
+    <div class="dia-calendario ${esHoy ? "hoy" : ""} ${esPasado ? "pasado" : ""} ${esFronteraMes ? "frontera-mes" : ""}" data-fecha="${fechaStr}">
       <span class="numero-dia">${fecha.getDate()}</span>
       <div class="eventos-dia">${filasEventos}</div>
     </div>
@@ -102,3 +103,65 @@ document.getElementById("agenda").innerHTML = `
     <div class="calendario">${celdas}</div>
   </div>
 `;
+
+// --- Partidos: pide a TheSportsDB el proximo partido de cada equipo y lo
+// inyecta directamente en la celda del calendario de arriba que corresponda
+// a esa fecha (usa el atributo data-fecha de cada celda y emojiTipo() de
+// mas arriba en este mismo archivo). Antes vivia en su propio js/partidos.js
+// con su propia caja; ahora es parte de la agenda, que es donde se pinta.
+
+// Equipos a seguir, con su id de TheSportsDB (la API que consulta cargarPartidos).
+const EQUIPOS_INTERES = [
+  { id: 137617, nombre: "Millonarios FC" },
+  { id: 137699, nombre: "Inter Miami" },
+  { id: 134501, nombre: "Selección Colombia" },
+  { id: 133738, nombre: "Real Madrid" },
+  { id: 133739, nombre: "Barcelona" },
+];
+
+// TheSportsDB da la fecha/hora del partido en UTC (dateEvent + strTime);
+// esto las junta y las convierte a fecha y hora locales de Madrid.
+function formatoFechaHoraMadrid(dateEvent, strTime) {
+  // dateEvent: "YYYY-MM-DD", strTime: "HH:MM:SS" en UTC
+  const fechaUTC = new Date(`${dateEvent}T${strTime}Z`); // la "Z" le dice a JS que es UTC
+  const fecha = fechaUTC.toLocaleDateString("es-ES", { timeZone: "Europe/Madrid", weekday: "short", day: "numeric", month: "short" }).replace(/\./g, ""); // quita los puntos de las abreviaturas ("lun." -> "lun")
+  const hora = fechaUTC.toLocaleTimeString("es-ES", { timeZone: "Europe/Madrid", hour: "2-digit", minute: "2-digit" });
+  return { fecha, hora };
+}
+
+// Descarta partidos que la API todavia lista como "proximos" pero cuya fecha-hora ya paso
+function proximoEventoValido(eventos) {
+  if (!eventos) return null; // el equipo no tiene ningun partido listado
+  const ahora = new Date();
+  // Devuelve el primer evento cuya fecha-hora sea posterior a ahora mismo.
+  return eventos.find(ev => {
+    if (!ev.strTime || !ev.dateEvent) return false; // evento sin fecha/hora usable, se ignora
+    const fechaEvento = new Date(`${ev.dateEvent}T${ev.strTime}Z`);
+    return fechaEvento > ahora;
+  }) || null;
+}
+
+async function cargarPartidos() {
+  await Promise.all(EQUIPOS_INTERES.map(async (equipo) => {
+    try {
+      const resp = await fetch(`https://www.thesportsdb.com/api/v1/json/123/eventsnext.php?id=${equipo.id}`);
+      const datos = await resp.json();
+      const evento = proximoEventoValido(datos.events);
+      if (!evento) return; // este equipo no tiene partido proximo, no hay nada que pintar
+
+      const esLocal = String(evento.idHomeTeam) === String(equipo.id);
+      const rival = esLocal ? evento.strAwayTeam : evento.strHomeTeam;
+      const { hora } = formatoFechaHoraMadrid(evento.dateEvent, evento.strTime);
+
+      const contenedor = document.querySelector(`.dia-calendario[data-fecha="${evento.dateEvent}"] .eventos-dia`);
+      if (!contenedor) return; // el partido cae fuera de las 6 semanas que se ven ahora mismo
+
+      const emoji = emojiTipo("partido");
+      contenedor.insertAdjacentHTML("beforeend", `<div class="fila-evento">${emoji} ${hora} ${equipo.nombre} vs ${rival}</div>`);
+    } catch (e) {
+      // si falla ese equipo, simplemente no se agrega su partido
+    }
+  }));
+}
+
+cargarPartidos();

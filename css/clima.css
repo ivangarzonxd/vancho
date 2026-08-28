@@ -8,7 +8,8 @@
 
 /* Ancho del cajon dentro de la cuadricula: ocupa 4 columnas de 7 */
 #clima {
-  grid-column: 1; /* cuantas columnas de la cuadricula invisible ocupa este cajon */
+  grid-column: 1; /* columna angosta */
+  grid-row: 2; /* fila de abajo */
 }
 
 /* Organiza el titulo y el contenido del cajon en columna */

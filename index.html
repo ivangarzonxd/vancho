@@ -7,18 +7,12 @@
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/clima.css">
     <link rel="stylesheet" href="css/agenda.css">
-    <link rel="stylesheet" href="css/partidos.css">
-    <link rel="stylesheet" href="css/dolar.css">
-    <link rel="stylesheet" href="css/tareas.css">
+    <link rel="stylesheet" href="css/pendientes.css">
 </head>
 <body>
 <!--pagina de inicio personalizada
-titulo de bienvenida con hora local de españa y colombia
-cajon con agenda personal mensual
-cajon con lista de tareas pendientes
-cajon con informacion de equipos de futbol de interes
-cajon con cambio de divisa 
-cajon con noticias de interes
+cajon con agenda personal (incluye los turnos de trabajo y los proximos partidos de futbol)
+cajon de pendientes (lista personal + cambio de divisa y hora de Colombia abajo)
 cajon con pronostico del clima
 esta pagina estara alojada en github pages y en github actions un robot enviara un json con python para actualizar diariamente esta pagina en mi pagina de inicio de mi navegador
 -->
@@ -29,15 +23,12 @@ esta pagina estara alojada en github pages y en github actions un robot enviara 
 
   <main class="panel">
 
-    <!-- El orden de estas secciones es el orden visual (izquierda a derecha, arriba a abajo,
-         se cierra una fila cada 4 unidades de "span"). Para reordenar un cajon, mueve su
-         <section> a otra posicion en esta lista. Para cambiar su tamaño horizontal, edita
-         "grid-column: span N" en el archivo css de ESE cajon (no aqui). -->
-    <section class="cajon" id="tareas"></section>
+    <!-- La posicion visual de cada cajon (columna angosta/ancha, fila de arriba/abajo) la
+         define "grid-column"/"grid-row" en el archivo css de ESE cajon (no aqui). El orden de
+         estas <section> solo importa en movil, donde se apilan tal cual aparecen aqui. -->
+    <section class="cajon" id="pendientes"></section>
     <section class="cajon" id="agenda"></section>
-<!--    <section class="cajon" id="dolar"></section> -->
     <section class="cajon" id="clima"></section>
-<!--    <section class="cajon" id="partidos"></section> -->
 
   </main>
 <script src="js/auto-refresh.js"></script>
@@ -45,9 +36,7 @@ esta pagina estara alojada en github pages y en github actions un robot enviara 
 <script src="js/datos-festivos.js"></script>
 <script src="js/datos-agenda.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
-<script src="js/tareas.js"></script>
+<script src="js/pendientes.js"></script>
 <script src="js/agenda.js"></script>
-<script src="js/partidos.js"></script>
-<script src="js/dolar.js"></script>
 </body>
 </html>

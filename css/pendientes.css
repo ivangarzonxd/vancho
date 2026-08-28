@@ -1,0 +1,161 @@
+/* ================================================================
+   pendientes.css
+   Cajon "Pendientes": arriba tu lista de tareas sin fecha fija,
+   ordenadas por importancia (arrastra para reordenar; la primera es
+   la mas urgente) - los datos viven en una Google Sheet, leidos y
+   escritos via el Apps Script propio (ver pendientes.js). Abajo,
+   separado por una linea, el cambio EUR -> COP y la hora de Colombia.
+   ================================================================ */
+
+/* Posicion del cajon en la cuadricula de 2 columnas: la angosta (col. 1), fila de arriba */
+#pendientes {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+/* Texto de "Cargando..." o "No se pudo conectar" mientras no hay datos aun */
+.pendiente-estado {
+  color: var(--texto-secundario); /* color apagado, es un mensaje de estado, no un dato */
+  font-size: 0.85rem; /* tamaño acorde al resto del cajon */
+}
+
+/* Fila con el campo de texto y el boton de "+" para agregar un pendiente nuevo */
+.pendientes-agregar {
+  display: flex; /* pone el input y el boton en la misma linea */
+  gap: 0.35rem; /* separacion entre el input y el boton */
+  margin-bottom: 0.5rem; /* separacion respecto a la lista de pendientes de abajo */
+  flex-shrink: 0; /* esta fila nunca se comprime, aunque la lista de abajo necesite mas espacio */
+}
+
+/* El campo de texto donde se escribe el pendiente nuevo */
+.pendientes-agregar input {
+  flex: 1; /* el input ocupa todo el ancho disponible, dejandole su tamaño fijo al boton */
+  min-width: 0; /* permite que el input se encoja sin forzar el ancho del cajon */
+  background: var(--bg); /* fondo distinto al del cajon, para que se note que es un campo */
+  border: 1px solid var(--borde); /* borde fino alrededor del campo */
+  border-radius: 0.35rem; /* esquinas redondeadas del campo */
+  color: var(--texto); /* color del texto que se escribe */
+  padding: 0.3rem 0.5rem; /* espacio interno del campo */
+  font-size: 0.8rem; /* tamaño de letra del campo */
+}
+
+/* Resalta el campo de texto cuando esta seleccionado (foco del teclado) */
+.pendientes-agregar input:focus {
+  outline: 1px solid var(--acento); /* contorno con el color de acento al escribir */
+}
+
+/* El boton de "+" para confirmar que se agregue el pendiente */
+.pendientes-agregar button {
+  background: var(--acento); /* fondo con el color de acento, para que se note el boton */
+  color: var(--bg); /* texto oscuro para que contraste con el fondo claro del boton */
+  border: none; /* sin borde, el fondo de color ya lo delimita */
+  border-radius: 0.35rem; /* esquinas redondeadas del boton */
+  width: 1.8rem; /* ancho fijo, boton cuadrado chico */
+  font-size: 1rem; /* tamaño del simbolo "+" */
+  cursor: pointer; /* el mouse cambia a "mano" al pasar por encima, indicando que es clickeable */
+}
+
+/* Envoltorio de toda la seccion de arriba (input + lista); ocupa el alto
+   que sobre del cajon, para que la seccion de divisa/hora de abajo no
+   se vea empujada fuera de la vista. */
+#pendientes-lista-wrap {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* La lista en si, con su propio scroll interno si se acumulan mas
+   pendientes de los que caben en su altura. */
+.lista-pendientes {
+  list-style: none; /* quita los puntos de lista por defecto de los <li> */
+  display: flex; /* apila los pendientes */
+  flex-direction: column; /* uno debajo de otro */
+  gap: 0.35rem; /* separacion entre pendientes */
+  flex: 1; /* la lista ocupa todo el alto restante del envoltorio de arriba */
+  min-height: 0; /* permite que la lista se encoja sin desbordar el cajon */
+  overflow-y: auto; /* scroll vertical propio si hay mas pendientes de los que caben */
+}
+
+/* Una tarjeta individual de pendiente dentro de la lista */
+.pendiente-item {
+  display: flex; /* pone la manija, el texto y el boton de borrar en la misma linea */
+  align-items: center; /* centra verticalmente esos tres elementos */
+  gap: 0.4rem; /* separacion entre la manija, el texto y el boton de borrar */
+  font-size: 0.85rem; /* tamaño de letra del pendiente */
+  border-left: 3px solid var(--acento); /* franja de color a la izquierda, marca visual */
+  padding: 0.2rem 0.4rem; /* espacio interno de la tarjeta */
+  background: var(--bg); /* fondo distinto al del cajon, para diferenciar cada tarjeta */
+  border-radius: 0.25rem; /* esquinas redondeadas de la tarjeta */
+}
+
+/* El icono de agarre (⠿) que se usa para arrastrar y reordenar el pendiente */
+.pendiente-agarre {
+  cursor: grab; /* el mouse cambia a "mano abierta" indicando que se puede arrastrar */
+  color: var(--texto-secundario); /* color apagado, es un control, no un dato */
+  user-select: none; /* evita que se seleccione como texto al intentar arrastrar */
+}
+
+/* El texto del pendiente en si */
+.pendiente-texto {
+  flex: 1; /* ocupa todo el espacio disponible entre la manija y el boton de borrar */
+  min-width: 0; /* permite que el texto se encoja/parta en vez de desbordar la tarjeta */
+  overflow-wrap: break-word; /* corta palabras largas para que no se salgan de la tarjeta */
+}
+
+/* El boton de "×" para borrar el pendiente */
+.pendiente-borrar {
+  background: none; /* sin fondo, solo el simbolo "×" */
+  border: none; /* sin borde */
+  color: var(--texto-secundario); /* color apagado por defecto, discreto */
+  font-size: 1rem; /* tamaño del simbolo "×" */
+  line-height: 1; /* evita espacio extra arriba/abajo del simbolo */
+  cursor: pointer; /* el mouse cambia a "mano" al pasar por encima */
+  padding: 0.1rem 0.3rem; /* area chica alrededor del simbolo, mas facil de tocar en movil */
+}
+
+/* Resalta el boton de borrar cuando el mouse pasa por encima */
+.pendiente-borrar:hover {
+  color: var(--acento); /* cambia a color de acento para avisar que va a borrar */
+}
+
+/* Estilo del "hueco" que deja el pendiente mientras se esta arrastrando (lo crea SortableJS) */
+.pendiente-fantasma {
+  opacity: 0.4; /* semitransparente, para marcar donde quedaria el pendiente al soltarlo */
+}
+
+/* Mensaje que se muestra cuando no hay ningun pendiente */
+.pendiente-vacia {
+  color: var(--texto-secundario); /* color apagado, es un mensaje, no un dato */
+}
+
+/* Envoltorio de la divisa/hora, abajo del todo: nunca se comprime y
+   lleva una linea arriba para separarla visualmente de la lista. */
+#pendientes-otros-wrap {
+  flex-shrink: 0; /* conserva su alto, no se deja aplastar por la lista de arriba */
+  margin-top: 0.6rem; /* separacion respecto a la lista de pendientes */
+  padding-top: 0.5rem; /* espacio entre la linea divisoria y el contenido */
+  border-top: 1px solid var(--borde); /* linea que separa visualmente las dos secciones del cajon */
+}
+
+/* Contenedor de los dos datos sueltos (euro, hora) */
+.otros-contenido {
+  display: flex; /* apila los dos datos */
+  flex-direction: column; /* uno debajo del otro */
+  gap: 0.6rem; /* separacion entre cada dato */
+}
+
+/* Un dato individual (etiqueta + valor), ej: "1 EUR" / "3.548 COP" */
+.otros-item {
+  display: flex; /* organiza la etiqueta y el valor en columna */
+  flex-direction: column; /* etiqueta arriba, valor grande abajo */
+  gap: 0.2rem; /* separacion entre la etiqueta y el valor */
+}
+
+/* El valor grande y destacado de cada dato. La etiqueta de arriba
+   usa .etiqueta-secundaria (ver base.css), no hace falta repetirla aqui. */
+.otros-valor {
+  font-size: 1.3rem; /* tamaño grande para que el valor resalte (un poco mas chico que antes, ahora comparte cajon) */
+  font-weight: 700; /* negrita */
+  color: var(--acento); /* color de acento para destacarlo */
+}

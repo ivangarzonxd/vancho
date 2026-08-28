@@ -71,7 +71,7 @@ header h1 {
   border-color: var(--acento); /* cambia el color del borde al color de acento */
 }
 
-/* Titulo de CUALQUIER cajon ("Clima", "Agenda", "Tareas"...). Un solo cambio aqui
+/* Titulo de CUALQUIER cajon ("Clima", "Agenda", "Pendientes"...). Un solo cambio aqui
    afecta a los titulos de todos los cajones a la vez. */
 .cajon h2 {
   font-size: 0.85rem; /* tamaño de letra del titulo del cajon */
