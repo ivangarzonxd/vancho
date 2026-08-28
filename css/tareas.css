@@ -1,19 +1,87 @@
 /* ================================================================
    tareas.css
    Cajon de tareas pendientes sin fecha fija, ordenadas por
-   importancia (la mas urgente arriba).
+   importancia (arrastra para reordenar; la primera es la mas
+   urgente). Los datos viven en una Google Sheet, leidos/escritos
+   via el Apps Script propio (ver tareas.js).
    ================================================================ */
 
 #tareas { grid-column: span 1; }
+
+.tarea-estado { color: var(--texto-secundario); font-size: 0.85rem; }
+
+.tareas-agregar {
+  display: flex;
+  gap: 0.35rem;
+  margin-bottom: 0.5rem;
+  flex-shrink: 0;
+}
+.tareas-agregar input {
+  flex: 1;
+  min-width: 0;
+  background: var(--bg);
+  border: 1px solid var(--borde);
+  border-radius: 0.35rem;
+  color: var(--texto);
+  padding: 0.3rem 0.5rem;
+  font-size: 0.8rem;
+}
+.tareas-agregar input:focus {
+  outline: 1px solid var(--acento);
+}
+.tareas-agregar button {
+  background: var(--acento);
+  color: var(--bg);
+  border: none;
+  border-radius: 0.35rem;
+  width: 1.8rem;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+/* La lista es la unica parte que puede necesitar scroll interno del
+   cajon, si se acumulan mas tareas de las que caben en su altura. */
 .lista-tareas {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.35rem;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
 }
+
 .tarea-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
   font-size: 0.85rem;
   border-left: 3px solid var(--acento);
-  padding-left: 0.5rem;
+  padding: 0.2rem 0.4rem;
+  background: var(--bg);
+  border-radius: 0.25rem;
 }
+.tarea-agarre {
+  cursor: grab;
+  color: var(--texto-secundario);
+  user-select: none;
+}
+.tarea-texto {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+.tarea-borrar {
+  background: none;
+  border: none;
+  color: var(--texto-secundario);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0.1rem 0.3rem;
+}
+.tarea-borrar:hover { color: var(--acento); }
+
+.tarea-fantasma { opacity: 0.4; }
+
 .tarea-vacia { color: var(--texto-secundario); }
