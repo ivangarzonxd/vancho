@@ -8,7 +8,8 @@
 
 /* Ancho del cajon dentro de la cuadricula: ocupa 1 columna de 7 */
 #tareas {
-  grid-column: span 1; /* cuantas columnas de la cuadricula invisible ocupa este cajon */
+  grid-column: 1; 
+  grid_row: 1;
 }
 
 /* Texto de "Cargando..." o "No se pudo conectar" mientras no hay datos aun */

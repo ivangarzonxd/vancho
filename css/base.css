@@ -141,13 +141,6 @@ header h1 {
   }
 }
 
-/* Desde 901px: una cuadricula invisible de 7 columnas x 2 filas, cero scroll de pagina.
-   Cada cajon ocupa N columnas de esa cuadricula (ver "grid-column: span N" en el css propio
-   de cada cajon) — todas las columnas miden lo mismo, asi que "span 2" es siempre el doble
-   de ancho que "span 1", sin importar en que cajon lo pongas. El orden de las <section> en
-   index.html define el orden visual.
-   Las unicas excepciones con scroll propio son clima (horizontal), agenda (vertical) y
-   tareas (vertical, si se acumulan muchas). */
 @media (min-width: 901px) {
   html, body {
     height: 100%; /* la pagina ocupa exactamente el alto de la ventana, ni mas ni menos */
@@ -155,7 +148,7 @@ header h1 {
   body {
     display: flex; /* header y panel se acomodan en columna dentro del alto fijo */
     flex-direction: column; /* header arriba, panel de cajones abajo */
-    overflow: hidden; /* bloquea cualquier scroll a nivel de pagina */
+    /* overflow: hidden; bloquea cualquier scroll a nivel de pagina */
   }
   header {
     flex-shrink: 0; /* el titulo de arriba nunca se comprime, conserva su alto */
@@ -164,8 +157,8 @@ header h1 {
     flex: 1; /* el panel ocupa todo el alto restante debajo del header */
     min-height: 0; /* permite que el panel se pueda encoger dentro del flex sin desbordar */
     display: grid; /* activa la cuadricula invisible de cajones */
-    grid-template-columns: repeat(7, 1fr); /* 7 columnas de ancho igual */
-    grid-template-rows: 1fr 1fr; /* exactamente 2 filas de alto igual */
+    grid-template-columns: 1fr 4fr;
+    grid-template-rows: 1fr 1fr; 
     gap: 0.6rem; /* separacion entre cajones de la cuadricula */
     overflow: hidden; /* la cuadricula misma no scrollea, solo sus cajones si lo declaran */
   }
