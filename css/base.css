@@ -9,159 +9,171 @@
    su span de columnas) vive en el archivo css de ESE cajon.
    ================================================================ */
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+/* Reset universal: aplica a TODOS los elementos de la pagina */
+* {
+  box-sizing: border-box; /* el padding y el borde se cuentan dentro del ancho/alto, no se suman aparte */
+  margin: 0; /* quita el margen por defecto que trae cada navegador */
+  padding: 0; /* quita el padding por defecto que trae cada navegador */
+}
 
 /* Paleta de colores: cambiar un valor aqui lo cambia en toda la pagina */
 :root {
-  --bg: #0f1115;
-  --bg-cajon: #1a1d24;
-  --borde: #2a2e37;
-  --texto: #e4e6eb;
-  --texto-secundario: #9aa0ac;
-  --acento: #7c9eff;
+  --bg: #0f1115; /* color de fondo general de la pagina */
+  --bg-cajon: #1a1d24; /* color de fondo de cada cajon */
+  --borde: #2a2e37; /* color del borde de los cajones y separadores */
+  --texto: #e4e6eb; /* color de texto principal */
+  --texto-secundario: #9aa0ac; /* color de texto secundario/apagado */
+  --acento: #7c9eff; /* color de acento (titulos, valores destacados, hover) */
 }
 
 /* Fondo, color de texto y tipografia base de toda la pagina */
 body {
-  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-  background: var(--bg);
-  color: var(--texto);
-  padding: 1.25rem;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif; /* fuente del sistema, sin cargar fuentes externas */
+  background: var(--bg); /* pinta el fondo con el color base */
+  color: var(--texto); /* color de texto por defecto */
+  padding: 1.25rem; /* margen interno alrededor de todo el contenido de la pagina */
 }
 
 /* Titulo grande de arriba de la pagina (no el de cada cajon) */
 header h1 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 0.75rem;
+  font-size: 1.25rem; /* tamaño del titulo "Mi Panel" */
+  font-weight: 600; /* grosor semi-negrita del titulo */
+  margin-bottom: 0.75rem; /* separacion entre el titulo y los cajones de abajo */
 }
 
 /* Contenedor de todos los cajones. En escritorio se convierte en cuadricula (ver media query abajo) */
 .panel {
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
+  display: flex; /* en movil, apila los cajones uno debajo del otro */
+  flex-direction: column; /* direccion vertical del apilado en movil */
+  gap: 0.6rem; /* separacion entre cajones */
 }
 
+/* Agrupa varios cajones en una misma fila cuando se usa este envoltorio */
 .fila-cajones {
-  display: flex;
-  gap: 0.6rem;
+  display: flex; /* pone los cajones que contiene en horizontal */
+  gap: 0.6rem; /* separacion entre esos cajones */
 }
 
 /* La caja generica de CUALQUIER cajon (fondo, borde, esquinas, padding).
    Todos los cajones la heredan; ninguno deberia redefinir esto en su propio css. */
 .cajon {
-  background: var(--bg-cajon);
-  border: 1px solid var(--borde);
-  border-radius: 16px;
-  padding: 0.65rem;
-  transition: border-color 0.2s ease;
-  flex: 1 1 0;
-  min-width: 0;
+  background: var(--bg-cajon); /* fondo propio de cada cajon */
+  border: 1px solid var(--borde); /* borde fino alrededor del cajon */
+  border-radius: 16px; /* esquinas redondeadas */
+  padding: 0.65rem; /* espacio interno entre el borde y el contenido */
+  transition: border-color 0.2s ease; /* anima el cambio de color del borde al pasar el mouse */
+  flex: 1 1 0; /* permite que el cajon crezca/encoja de forma pareja dentro de su fila */
+  min-width: 0; /* evita que el contenido interno fuerce un ancho minimo y rompa el layout */
 }
 
-.cajon:hover { border-color: var(--acento); }
+/* Resalta el borde del cajon cuando el mouse pasa por encima */
+.cajon:hover {
+  border-color: var(--acento); /* cambia el color del borde al color de acento */
+}
 
 /* Titulo de CUALQUIER cajon ("Clima", "Agenda", "Tareas"...). Un solo cambio aqui
    afecta a los titulos de todos los cajones a la vez. */
 .cajon h2 {
-  font-size: 0.85rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--acento);
-  margin-bottom: 0.5rem;
-  flex-shrink: 0;
+  font-size: 0.85rem; /* tamaño de letra del titulo del cajon */
+  font-weight: 600; /* grosor semi-negrita */
+  text-transform: uppercase; /* fuerza el texto a mayusculas */
+  letter-spacing: 0.05em; /* separa un poco las letras, look mas "label" */
+  color: var(--acento); /* pinta el titulo con el color de acento */
+  margin-bottom: 0.5rem; /* separacion entre el titulo y el contenido del cajon */
+  flex-shrink: 0; /* evita que el titulo se comprima si el cajon anda corto de alto */
 }
 
 /* Texto de apoyo generico dentro de un cajon (no todos lo usan) */
 .cajon p {
-  color: var(--texto-secundario);
-  line-height: 1.5;
+  color: var(--texto-secundario); /* color apagado para texto secundario */
+  line-height: 1.5; /* interlineado mas comodo de leer */
 }
 
 /* Etiqueta chica y discreta, reutilizable en cualquier cajon: nombres de dia,
    etiquetas de dato ("1 EUR", "Hora Colombia"), textos de apoyo en mayuscula.
    Ejemplo de uso: <div class="dia-semana etiqueta-secundaria">Lun</div> */
 .etiqueta-secundaria {
-  font-size: 0.7rem;
-  color: var(--texto-secundario);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-weight: 600;
+  font-size: 0.7rem; /* tamaño chico, texto de apoyo */
+  color: var(--texto-secundario); /* color apagado */
+  text-transform: uppercase; /* mayusculas */
+  letter-spacing: 0.05em; /* separacion entre letras */
+  font-weight: 600; /* semi-negrita para que se lea bien aunque sea chico */
 }
-
 
 /* Scrollbar delgado y discreto, para cualquier elemento con scroll en toda la pagina */
 * {
-  scrollbar-width: thin;
-  scrollbar-color: var(--borde) transparent;
+  scrollbar-width: thin; /* Firefox: usa la variante delgada del scrollbar */
+  scrollbar-color: var(--borde) transparent; /* Firefox: color del scroll y de su fondo */
 }
 
+/* Ancho del scrollbar en navegadores basados en Chromium/Safari */
 *::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
+  width: 4px; /* grosor del scrollbar vertical */
+  height: 4px; /* grosor del scrollbar horizontal */
 }
 
+/* Fondo del carril por donde se desliza el scrollbar */
 *::-webkit-scrollbar-track {
-  background: transparent;
+  background: transparent; /* invisible, no compite con el fondo del cajon */
 }
 
+/* La "barrita" que se arrastra del scrollbar */
 *::-webkit-scrollbar-thumb {
-  background: var(--borde);
-  border-radius: 4px;
+  background: var(--borde); /* color discreto por defecto */
+  border-radius: 4px; /* esquinas redondeadas de la barrita */
 }
 
+/* Color de la barrita del scroll cuando se pasa el mouse por encima */
 *::-webkit-scrollbar-thumb:hover {
-  background: var(--acento);
+  background: var(--acento); /* se resalta con el color de acento */
 }
 
 /* Debajo de 901px: todo se apila en una columna, la pagina scrollea normal (como cualquier movil). */
 @media (max-width: 900px) {
   .panel {
-    flex-direction: column;
+    flex-direction: column; /* fuerza el apilado vertical de cajones en movil */
   }
   .fila-cajones {
-    flex-direction: column;
+    flex-direction: column; /* tambien apila verticalmente lo que este agrupado en una fila */
   }
   .cajon {
-    height: auto;
+    height: auto; /* cada cajon mide lo que necesite su contenido, sin altura fija */
   }
 }
 
-/* Desde 901px: una cuadricula invisible de 4 columnas x 2 filas, cero scroll de pagina.
+/* Desde 901px: una cuadricula invisible de 7 columnas x 2 filas, cero scroll de pagina.
    Cada cajon ocupa N columnas de esa cuadricula (ver "grid-column: span N" en el css propio
    de cada cajon) — todas las columnas miden lo mismo, asi que "span 2" es siempre el doble
    de ancho que "span 1", sin importar en que cajon lo pongas. El orden de las <section> en
-   index.html define el orden visual; con 4 columnas por fila, cada 4 unidades de "span"
-   se cierra una fila sola.
-   Las unicas excepciones con scroll propio son clima (horizontal) y agenda (vertical). */
+   index.html define el orden visual.
+   Las unicas excepciones con scroll propio son clima (horizontal), agenda (vertical) y
+   tareas (vertical, si se acumulan muchas). */
 @media (min-width: 901px) {
   html, body {
-    height: 100%;
+    height: 100%; /* la pagina ocupa exactamente el alto de la ventana, ni mas ni menos */
   }
   body {
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
+    display: flex; /* header y panel se acomodan en columna dentro del alto fijo */
+    flex-direction: column; /* header arriba, panel de cajones abajo */
+    overflow: hidden; /* bloquea cualquier scroll a nivel de pagina */
   }
   header {
-    flex-shrink: 0;
+    flex-shrink: 0; /* el titulo de arriba nunca se comprime, conserva su alto */
   }
   .panel {
-    flex: 1;
-    min-height: 0;
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    grid-template-rows: 1fr 1fr;
-    gap: 0.6rem;
-    overflow: hidden;
+    flex: 1; /* el panel ocupa todo el alto restante debajo del header */
+    min-height: 0; /* permite que el panel se pueda encoger dentro del flex sin desbordar */
+    display: grid; /* activa la cuadricula invisible de cajones */
+    grid-template-columns: repeat(7, 1fr); /* 7 columnas de ancho igual */
+    grid-template-rows: 1fr 1fr; /* exactamente 2 filas de alto igual */
+    gap: 0.6rem; /* separacion entre cajones de la cuadricula */
+    overflow: hidden; /* la cuadricula misma no scrollea, solo sus cajones si lo declaran */
   }
   .cajon {
-    min-width: 0;
-    min-height: 0;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
+    min-width: 0; /* evita que el contenido fuerce un ancho minimo dentro de su celda */
+    min-height: 0; /* evita que el contenido fuerce un alto minimo dentro de su celda */
+    overflow: hidden; /* por defecto ningun cajon scrollea, salvo que el propio cajon lo habilite */
+    display: flex; /* organiza el titulo y el contenido interno del cajon en columna */
+    flex-direction: column; /* titulo arriba, contenido abajo, dentro del cajon */
   }
 }

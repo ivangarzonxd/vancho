@@ -6,87 +6,96 @@
    coloreados segun su tipo (trabajo / evento / festivo).
    ================================================================ */
 
-#agenda { grid-column: span 5; }
+/* Ancho del cajon dentro de la cuadricula: ocupa 5 columnas de 7 */
+#agenda {
+  grid-column: span 5; /* cuantas columnas de la cuadricula invisible ocupa este cajon */
+}
 
 /* Fila con los nombres de los 7 dias, arriba del calendario */
 .semana-header {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 0.3rem;
-  margin-top: 0.5rem;
+  display: grid; /* activa cuadricula para alinear los 7 nombres de dia */
+  grid-template-columns: repeat(7, 1fr); /* 7 columnas iguales, una por dia de la semana */
+  gap: 0.3rem; /* separacion entre cada nombre de dia */
+  margin-top: 0.5rem; /* separacion respecto al titulo del cajon */
 }
 
 /* El texto de "Lun, Mar, Mie..." ya usa .etiqueta-secundaria (ver base.css);
    aqui solo se ajusta el centrado, que es propio de esta cuadricula */
 .dia-semana {
-  text-align: center;
+  text-align: center; /* centra el nombre del dia dentro de su columna */
 }
 
 /* Zona con scroll vertical propio: aqui vive el calendario de 6 semanas */
 .dias-scroll {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-  margin-top: 0.3rem;
+  flex: 1; /* ocupa todo el alto restante del cajon debajo de la cabecera */
+  min-height: 0; /* permite que se encoja sin desbordar el cajon */
+  overflow-y: auto; /* habilita el scroll vertical cuando el calendario no cabe */
+  margin-top: 0.3rem; /* separacion respecto a la cabecera de dias */
 }
 
 /* Cuadricula de 7 columnas x 6 filas (un dia por celda) */
 .calendario {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 0.3rem;
+  display: grid; /* activa la cuadricula del calendario */
+  grid-template-columns: repeat(7, 1fr); /* 7 columnas iguales, una por dia de la semana */
+  gap: 0.3rem; /* separacion entre celdas de dias */
 }
 
 /* Una celda de un dia individual del calendario */
 .dia-calendario {
   height: 4.2rem; /* espacio para 3-4 renglones cuando metamos notas */
-  width: 100%;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-  padding: 0.3rem;
-  border-radius: 6px;
-  font-size: 0.8rem;
-  background: var(--bg);
+  width: 100%; /* ocupa todo el ancho de su columna en la cuadricula */
+  box-sizing: border-box; /* el padding no agranda el tamaño final de la celda */
+  display: flex; /* organiza numero de dia y eventos en columna */
+  flex-direction: column; /* numero de dia arriba, eventos abajo */
+  align-items: flex-start; /* alinea el contenido a la izquierda de la celda */
+  justify-content: flex-start; /* agrupa el contenido arriba de la celda */
+  padding: 0.3rem; /* espacio interno de la celda */
+  border-radius: 6px; /* esquinas redondeadas de la celda */
+  font-size: 0.8rem; /* tamaño de letra base dentro de la celda */
+  background: var(--bg); /* fondo distinto al del cajon, para diferenciar cada dia */
 }
 
+/* Celda de un dia que ya paso */
 .dia-calendario.pasado {
-  opacity: 0.35;
+  opacity: 0.35; /* atenua visualmente los dias que ya pasaron */
 }
 
+/* Celda del dia de hoy, resaltada */
 .dia-calendario.hoy {
-  background: var(--acento);
-  color: #0f1115;
-  font-weight: 700;
+  background: var(--acento); /* fondo con el color de acento para que resalte */
+  color: #0f1115; /* texto oscuro para que se lea bien sobre el fondo claro de acento */
+  font-weight: 700; /* negrita para reforzar que es el dia actual */
 }
 
+/* Celda que es el primer dia de un mes nuevo */
 .dia-calendario.frontera-mes {
-  border-left: 2px solid var(--acento);
+  border-left: 2px solid var(--acento); /* linea vertical marcando donde empieza el mes */
 }
 
-.numero-dia { font-weight: 600; }
+/* El numero del dia dentro de la celda (ej: "25") */
+.numero-dia {
+  font-weight: 600; /* semi-negrita para que se distinga del texto de los eventos */
+}
 
 /* Lista de eventos de ese dia, con su propio scroll interno si no caben */
 .eventos-dia {
-  margin-top: 0.15rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
-  overflow-y: auto;
-  max-height: 2.9rem;
-  width: 100%;
+  margin-top: 0.15rem; /* separacion respecto al numero del dia */
+  display: flex; /* apila los eventos del dia */
+  flex-direction: column; /* un evento debajo de otro */
+  gap: 0.1rem; /* separacion chica entre eventos */
+  overflow-y: auto; /* scroll interno si hay mas eventos de los que caben en la celda */
+  max-height: 2.9rem; /* limite de alto antes de que aparezca el scroll */
+  width: 100%; /* ocupa todo el ancho de la celda */
 }
 
 /* Un evento individual dentro de un dia (color = tipo de evento) */
 .fila-evento {
-  font-size: 0.6rem;
-  line-height: 1.15;
-  border-left: 3px solid;
-  padding-left: 0.25rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  color: var(--texto-secundario);
+  font-size: 0.6rem; /* tamaño chico, hay poco espacio por celda */
+  line-height: 1.15; /* interlineado ajustado */
+  border-left: 3px solid; /* franja de color a la izquierda (el color lo pone el JS segun el tipo) */
+  padding-left: 0.25rem; /* separacion entre la franja de color y el texto */
+  white-space: nowrap; /* evita que el texto del evento se parta en dos lineas */
+  overflow: hidden; /* esconde el texto que no cabe en el ancho de la celda */
+  text-overflow: ellipsis; /* muestra "..." cuando el texto del evento se corta */
+  color: var(--texto-secundario); /* color apagado para el texto del evento */
 }

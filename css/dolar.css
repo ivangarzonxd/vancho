@@ -4,32 +4,36 @@
    ir sumando aqui otros datos pequeños y sueltos en el futuro.
    ================================================================ */
 
-#dolar { grid-column: span 1; }
-
+/* Ancho del cajon dentro de la cuadricula: ocupa 1 columna de 7 */
 #dolar {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  grid-column: span 1; /* cuantas columnas de la cuadricula invisible ocupa este cajon */
+}
+
+/* Centra verticalmente el contenido, ya que es un cajon chico con poco texto */
+#dolar {
+  display: flex; /* activa flexbox dentro del cajon */
+  flex-direction: column; /* titulo y datos en columna */
+  justify-content: center; /* centra verticalmente el contenido si sobra alto */
 }
 
 /* Contenedor de todos los datos sueltos del cajon */
 .otros-contenido {
-  display: flex;
-  flex-direction: column;
-  gap: 1.2rem;
+  display: flex; /* apila los distintos datos (euro, hora) */
+  flex-direction: column; /* un dato debajo de otro */
+  gap: 1.2rem; /* separacion entre cada dato */
 }
 
 /* Un dato individual (etiqueta + valor), ej: "1 EUR" / "3.548 COP" */
 .otros-item {
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
+  display: flex; /* organiza la etiqueta y el valor en columna */
+  flex-direction: column; /* etiqueta arriba, valor grande abajo */
+  gap: 0.2rem; /* separacion entre la etiqueta y el valor */
 }
 
 /* El valor grande y destacado de cada dato. La etiqueta de arriba
    usa .etiqueta-secundaria (ver base.css), no hace falta repetirla aqui. */
 .otros-valor {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--acento);
+  font-size: 1.5rem; /* tamaño grande para que el valor resalte */
+  font-weight: 700; /* negrita */
+  color: var(--acento); /* color de acento para destacarlo */
 }

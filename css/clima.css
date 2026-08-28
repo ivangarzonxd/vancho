@@ -6,87 +6,98 @@
    scrollea horizontalmente (la unica excepcion junto con agenda).
    ================================================================ */
 
-#clima { grid-column: span 4; }
-
+/* Ancho del cajon dentro de la cuadricula: ocupa 4 columnas de 7 */
 #clima {
-  display: flex;
-  flex-direction: column;
+  grid-column: span 4; /* cuantas columnas de la cuadricula invisible ocupa este cajon */
+}
+
+/* Organiza el titulo y el contenido del cajon en columna */
+#clima {
+  display: flex; /* activa flexbox dentro del cajon */
+  flex-direction: column; /* titulo arriba, tarjetas de dias abajo */
 }
 
 /* Envoltorio con el scroll horizontal cuando no caben las 7 tarjetas */
 .clima-dias-wrap {
-  flex: 1;
-  min-height: 0;
-  overflow-x: auto;
-  overflow-y: hidden;
+  flex: 1; /* ocupa todo el alto restante del cajon debajo del titulo */
+  min-height: 0; /* permite que se pueda encoger sin desbordar el cajon */
+  overflow-x: auto; /* habilita el scroll horizontal cuando las tarjetas no caben */
+  overflow-y: hidden; /* nunca scrollea verticalmente */
 }
 
 /* Fila con una tarjeta por dia */
 .clima-dias {
-  display: flex;
-  gap: 0.6rem;
-  height: 100%;
+  display: flex; /* pone las tarjetas en fila horizontal */
+  gap: 0.6rem; /* separacion entre tarjetas */
+  height: 100%; /* ocupa todo el alto del envoltorio con scroll */
 }
 
 /* Tarjeta individual de un dia */
 .dia-clima {
-  flex: 0 0 auto;
-  width: 5.5rem;
-  background: var(--bg);
-  border-radius: 10px;
-  padding: 0.75rem 0.4rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  text-align: center;
-  gap: 0.35rem;
+  flex: 0 0 auto; /* la tarjeta no se estira ni se encoge, mantiene su ancho propio */
+  width: 5.5rem; /* ancho fijo de cada tarjeta */
+  background: var(--bg); /* fondo un poco distinto al del cajon, para diferenciar la tarjeta */
+  border-radius: 10px; /* esquinas redondeadas de la tarjeta */
+  padding: 0.75rem 0.4rem; /* espacio interno vertical y horizontal de la tarjeta */
+  display: flex; /* organiza fecha/emoji/temp/lluvia/ropa en columna */
+  flex-direction: column; /* apila los elementos de la tarjeta de arriba a abajo */
+  align-items: center; /* centra horizontalmente cada elemento dentro de la tarjeta */
+  justify-content: space-between; /* reparte el espacio vertical sobrante entre los elementos */
+  text-align: center; /* centra el texto dentro de cada elemento */
+  gap: 0.35rem; /* separacion entre fecha/emoji/temp/lluvia/ropa */
 }
 
+/* Texto de la fecha del dia (ej: "Lun 25 ago") */
 .dia-fecha {
-  font-size: 0.7rem;
-  color: var(--texto-secundario);
-  text-transform: capitalize;
-  white-space: nowrap;
+  font-size: 0.7rem; /* tamaño chico */
+  color: var(--texto-secundario); /* color apagado */
+  text-transform: capitalize; /* pone en mayuscula la primera letra */
+  white-space: nowrap; /* evita que la fecha se parta en dos lineas */
 }
 
+/* Emoji grande que representa el clima del dia */
 .dia-emoji {
-  font-size: 1.9rem;
-  line-height: 1;
+  font-size: 1.9rem; /* tamaño grande para que el emoji se note */
+  line-height: 1; /* evita espacio extra arriba/abajo del emoji */
 }
 
+/* Temperatura maxima del dia */
 .dia-temp {
-  font-size: 0.9rem;
-  font-weight: 700;
+  font-size: 0.9rem; /* tamaño de la temperatura maxima */
+  font-weight: 700; /* negrita para que resalte */
 }
 
+/* La temperatura minima, dentro de .dia-temp, en un estilo mas discreto */
 .dia-temp .temp-min {
-  font-weight: 400;
-  color: var(--texto-secundario);
+  font-weight: 400; /* peso normal, no negrita, para diferenciarla de la maxima */
+  color: var(--texto-secundario); /* color apagado */
 }
 
 /* Porcentaje de lluvia arriba, hora del chubasco abajo (si aplica) */
 .dia-lluvia {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  line-height: 1.2;
+  display: flex; /* organiza porcentaje y hora en columna */
+  flex-direction: column; /* porcentaje arriba, hora abajo */
+  align-items: center; /* centra ambos horizontalmente */
+  line-height: 1.2; /* interlineado ajustado entre las dos lineas */
 }
 
+/* El numero de probabilidad de lluvia (ej: "40%") */
 .lluvia-pct {
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--acento);
+  font-size: 0.78rem; /* tamaño del porcentaje */
+  font-weight: 600; /* semi-negrita */
+  color: var(--acento); /* color de acento para que se note el dato */
 }
 
+/* El rango de horas del chubasco (ej: "14-17h") */
 .lluvia-hora {
-  font-size: 0.6rem;
-  color: var(--texto-secundario);
-  white-space: nowrap;
+  font-size: 0.6rem; /* tamaño chico, dato secundario */
+  color: var(--texto-secundario); /* color apagado */
+  white-space: nowrap; /* evita que el rango de horas se corte en dos lineas */
 }
 
+/* Sugerencia de que ponerse ese dia */
 .dia-ropa {
-  font-size: 0.65rem;
-  color: var(--texto-secundario);
-  line-height: 1.2;
+  font-size: 0.65rem; /* tamaño chico */
+  color: var(--texto-secundario); /* color apagado */
+  line-height: 1.2; /* interlineado ajustado si el texto ocupa dos lineas */
 }

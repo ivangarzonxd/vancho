@@ -50,7 +50,12 @@ for componente in calendario.walk():
 
 eventos.sort(key=lambda e: (e["fecha"], e["hora"] or "00:00"))
 
-lineas = ["const eventosCalendario = ["]
+lineas = [
+    "// Datos de la agenda, generados automaticamente por scripts/actualizar_datos.py",
+    "// (se sobreescribe cada madrugada via GitHub Actions; no editar a mano, se perderia).",
+    "// Cada evento: fecha (YYYY-MM-DD), tipo (trabajo/evento/tarea/...), nota (texto), hora (HH:MM o null).",
+    "const eventosCalendario = [",
+]
 for e in eventos:
     hora_js = f'"{e["hora"]}"' if e["hora"] else "null"
     nota_escapada = e["nota"].replace('"', '\\"')

@@ -1,3 +1,6 @@
+// Lista de festivos fijos de Madrid/España, a mano (no la toca ningun robot).
+// Cada entrada: fecha (YYYY-MM-DD), tipo (siempre "festivo" aqui), nota (nombre del festivo).
+// Se junta con eventosCalendario dentro de agenda.js para pintar el calendario.
 const eventosFestivos = [
   { fecha: "2026-01-01", tipo: "festivo", nota: "Año Nuevo" },
   { fecha: "2026-01-06", tipo: "festivo", nota: "Reyes" },

@@ -4,9 +4,40 @@
    de cada equipo de interes, ordenada por el mas proximo primero.
    ================================================================ */
 
-#partidos { grid-column: span 2; }
-.tabla-partidos-wrap { overflow-x: auto; }
-.tabla-partidos { border-collapse: collapse; margin-top: 0.5rem; width: 100%; }
-.tabla-partidos th, .tabla-partidos td { padding: 0.3rem 0.5rem; text-align: left; font-size: 0.8rem; border-bottom: 1px solid var(--borde); }
-.tabla-partidos th { color: var(--texto-secundario); font-weight: 600; white-space: nowrap; }
-.tabla-partidos tr:last-child td { border-bottom: none; }
+/* Ancho del cajon dentro de la cuadricula: ocupa 2 columnas de 7 */
+#partidos {
+  grid-column: span 2; /* cuantas columnas de la cuadricula invisible ocupa este cajon */
+}
+
+/* Envoltorio de la tabla, por si en una pantalla chica no cupieran todas las columnas */
+.tabla-partidos-wrap {
+  overflow-x: auto; /* scroll horizontal de respaldo si la tabla no cabe en el ancho del cajon */
+}
+
+/* La tabla en si, con el proximo partido de cada equipo */
+.tabla-partidos {
+  border-collapse: collapse; /* une los bordes de las celdas en una sola linea, sin dobles bordes */
+  margin-top: 0.5rem; /* separacion respecto al titulo del cajon */
+  width: 100%; /* la tabla ocupa todo el ancho disponible del cajon */
+}
+
+/* Celdas de cabecera y de datos: mismo padding, alineacion y tamaño de letra */
+.tabla-partidos th,
+.tabla-partidos td {
+  padding: 0.3rem 0.5rem; /* espacio interno de cada celda */
+  text-align: left; /* texto alineado a la izquierda */
+  font-size: 0.8rem; /* tamaño de letra compacto */
+  border-bottom: 1px solid var(--borde); /* linea separadora debajo de cada fila */
+}
+
+/* Estilo propio de las celdas de cabecera (equipo, rival, fecha...) */
+.tabla-partidos th {
+  color: var(--texto-secundario); /* color apagado para diferenciarla de los datos */
+  font-weight: 600; /* semi-negrita */
+  white-space: nowrap; /* evita que el nombre de la columna se parta en dos lineas */
+}
+
+/* Quita el borde inferior de la ultima fila, para que no quede una linea suelta al final */
+.tabla-partidos tr:last-child td {
+  border-bottom: none; /* sin linea separadora en la ultima fila */
+}
