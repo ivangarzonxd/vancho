@@ -1,4 +1,5 @@
 import os
+import time
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
@@ -8,6 +9,11 @@ API_KEY = os.environ["API_FOOTBALL_KEY"]
 ZONA = ZoneInfo("Europe/Madrid")
 BASE_URL = "https://v3.football.api-sports.io"
 CABECERAS = {"x-apisports-key": API_KEY}
+
+# Cuantos partidos futuros como maximo se guardan por equipo (de sobra para
+# las 6 semanas que muestra la agenda; los que caigan mas adelante
+# simplemente no encuentran celda y no se pintan, no estorban).
+MAX_PARTIDOS_POR_EQUIPO = 15
 
 # Equipos a seguir. "busqueda" es el texto que se le manda al buscador de
 # equipos de API-Football (GET /teams?search=...) para encontrar su id;
@@ -32,6 +38,7 @@ def buscar_id_equipo(equipo):
         params={"search": equipo["busqueda"]},
         timeout=30,
     )
+    time.sleep(1.3)  # el plan gratis limita a 10 peticiones/minuto
     resp.raise_for_status()
     resultados = resp.json().get("response", [])
 
@@ -45,32 +52,36 @@ def buscar_id_equipo(equipo):
     return None
 
 
-def proximos_partidos(equipo_id):
-    """Trae los proximos partidos programados de un equipo (cualquier
-    competicion), sin depender de en que temporada/liga esten."""
+def partidos_de_temporada(equipo_id, temporada):
+    """Trae TODOS los partidos de un equipo en una temporada dada (el plan
+    gratis de API-Football no da acceso al parametro 'next', asi que hay que
+    pedir por 'season' y filtrar los futuros nosotros mismos). "temporada" es
+    el año en que arranca la temporada segun la convencion de API-Football
+    (ej. la Liga española 2026-2027 se pide como season=2026)."""
     resp = requests.get(
         f"{BASE_URL}/fixtures",
         headers=CABECERAS,
-        params={"team": equipo_id, "next": 15},
+        params={"team": equipo_id, "season": temporada},
         timeout=30,
     )
+    time.sleep(1.3)  # el plan gratis limita a 10 peticiones/minuto
     resp.raise_for_status()
     cuerpo = resp.json()
 
-    # DIAGNOSTICO: si el plan gratis no da permiso para este equipo/liga (o
-    # cualquier otro motivo), API-Football normalmente NO devuelve un error
-    # HTTP: devuelve 200 OK con "response" vacio y el motivo real dentro de
-    # "errors". Sin esto no hay forma de distinguir "0 partidos programados"
-    # de "el plan no deja consultar esto".
+    # DIAGNOSTICO: si el plan gratis no da permiso para esto (o cualquier
+    # otro motivo), API-Football normalmente NO devuelve un error HTTP:
+    # devuelve 200 OK con "response" vacio y el motivo real dentro de
+    # "errors". Sin esto no hay forma de distinguir "0 partidos" de "el
+    # plan no deja consultar esto".
     errores = cuerpo.get("errors")
     if errores:
-        print(f"  -> errors de la API: {errores}")
-    print(f"  -> results={cuerpo.get('results')} paging={cuerpo.get('paging')}")
+        print(f"  -> temporada {temporada}: errors de la API: {errores}")
 
     return cuerpo.get("response", [])
 
 
 eventos = []
+ahora_utc = datetime.now(ZoneInfo("UTC"))
 
 for equipo in EQUIPOS_INTERES:
     try:
@@ -79,18 +90,38 @@ for equipo in EQUIPOS_INTERES:
             print(f"AVISO: no se encontro el equipo '{equipo['nombre']}' (busqueda: '{equipo['busqueda']}')")
             continue
 
-        partidos = proximos_partidos(equipo_id)
-        print(f"{equipo['nombre']} (id={equipo_id}): {len(partidos)} partidos proximos")
+        # Se piden DOS temporadas (el año actual y el anterior) porque cada
+        # liga etiqueta sus temporadas distinto: las de calendario (MLS,
+        # Colombia) usan el año en curso, pero las europeas (La Liga) siguen
+        # llamandose con el año en que arrancaron hasta mayo/junio siguiente
+        # (ej. en enero de 2027 La Liga todavia es la temporada "2026"). Asi
+        # se cubren ambas convenciones sin tener que saber de antemano cual
+        # usa cada equipo.
+        anio_actual = datetime.now(ZONA).year
+        vistos = set()  # ids de partido, para no duplicar si sale en ambas consultas
+        partidos_futuros = []
 
-        for partido in partidos:
-            fixture = partido.get("fixture", {})
+        for temporada in (anio_actual, anio_actual - 1):
+            for partido in partidos_de_temporada(equipo_id, temporada):
+                fixture = partido.get("fixture", {})
+                fixture_id = fixture.get("id")
+                fecha_iso_utc = fixture.get("date")
+                if not fecha_iso_utc or fixture_id in vistos:
+                    continue
+
+                momento_utc = datetime.fromisoformat(fecha_iso_utc)
+                if momento_utc <= ahora_utc:
+                    continue  # ya se jugo (o esta en juego), no interesa
+
+                vistos.add(fixture_id)
+                partidos_futuros.append((momento_utc, partido))
+
+        partidos_futuros.sort(key=lambda par: par[0])
+        partidos_futuros = partidos_futuros[:MAX_PARTIDOS_POR_EQUIPO]
+        print(f"{equipo['nombre']} (id={equipo_id}): {len(partidos_futuros)} partidos proximos")
+
+        for momento_utc, partido in partidos_futuros:
             equipos_partido = partido.get("teams", {})
-
-            fecha_iso_utc = fixture.get("date")  # ej: "2026-09-05T19:00:00+00:00"
-            if not fecha_iso_utc:
-                continue
-
-            momento_utc = datetime.fromisoformat(fecha_iso_utc)
             momento_madrid = momento_utc.astimezone(ZONA)
             fecha = momento_madrid.date().isoformat()
             hora = momento_madrid.strftime("%H:%M")
