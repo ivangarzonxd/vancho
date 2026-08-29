@@ -1,0 +1,48 @@
+/* ================================================================
+   titulo.css
+   Cajon del titulo de la pagina ("Vancho"): antes era un header fijo
+   arriba de toda la pagina; ahora vive DENTRO de la cuadricula, como
+   la primera fila (chica) de la columna angosta de la izquierda, para
+   que la agenda pueda ocupar toda la altura de la pantalla a la derecha.
+   Colores invertidos respecto al resto de cajones: fondo solido de
+   color de acento (sin degradado) y texto oscuro encima.
+   ================================================================ */
+
+/* Posicion del cajon en la cuadricula: columna angosta (1), primera fila */
+#titulo {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+/* Fondo solido (sin degradado, a diferencia del resto de cajones) y
+   centrado del contenido; el alto de esta fila lo define "auto" en la
+   cuadricula de base.css, es decir: el que necesite este contenido. */
+#titulo {
+  background: var(--acento); /* color solido, plano: "colores invertidos" respecto al resto */
+  display: flex; /* centra el titulo dentro del cajon */
+  align-items: center; /* centrado vertical */
+  justify-content: center; /* centrado horizontal */
+  text-align: center; /* por si el texto necesitara mas de una linea */
+}
+
+/* El nombre "Vancho": tipografia propia (Space Grotesk, cargada en index.html),
+   distinta a la del resto de la pagina, para que se sienta como una marca. */
+#titulo h1 {
+  font-family: "Space Grotesk", system-ui, sans-serif; /* fuente especial solo para este texto */
+  font-size: 1.15rem; /* mas chico que antes: esta fila es chica a proposito */
+  font-weight: 700; /* la variante que se cargo de Space Grotesk es la de 700 */
+  letter-spacing: -0.01em; /* letras un poco mas juntas */
+  color: var(--bg-cajon-2); /* oscuro, invertido: antes el texto era claro sobre fondo oscuro */
+}
+
+/* Etiqueta chica debajo del nombre ("panel personal") */
+#titulo .subtitulo {
+  display: block; /* en su propia linea, debajo del nombre */
+  font-size: 0.55rem; /* tamaño chico, es solo un subtitulo */
+  font-weight: 600; /* semi-negrita */
+  letter-spacing: 0.12em; /* letras separadas, look de "etiqueta" */
+  text-transform: uppercase; /* mayusculas */
+  color: var(--bg-cajon-2); /* mismo tono oscuro que el nombre */
+  opacity: 0.75; /* un poco mas discreto que el nombre */
+  margin-top: 0.1rem; /* separacion respecto al nombre */
+}

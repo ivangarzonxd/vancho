@@ -3,40 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>pagina de inicio</title>
-    <link rel="stylesheet" href="css/base.css">
-    <link rel="stylesheet" href="css/clima.css">
-    <link rel="stylesheet" href="css/agenda.css">
-    <link rel="stylesheet" href="css/pendientes.css">
+    <title>Vancho</title>
+    <!-- Tipografia especial SOLO para el nombre "Vancho" del cajon de titulo (ver css/titulo.css);
+         el resto de la pagina sigue usando la fuente del sistema (mas liviano, sin cargar nada). -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+    <!-- El "?v=1" al final de cada css es para forzar al navegador a bajar la version
+         nueva del archivo en vez de servir una copia vieja guardada en cache. Mientras
+         seguimos ajustando el diseño, si haces un cambio y no lo ves reflejado, sube
+         este numero (aqui y en el archivo que cambiaste) antes de sospechar de otra cosa. -->
+    <link rel="stylesheet" href="css/base.css?v=7">
+    <link rel="stylesheet" href="css/titulo.css?v=1">
+    <link rel="stylesheet" href="css/clima.css?v=4">
+    <link rel="stylesheet" href="css/agenda.css?v=3">
+    <link rel="stylesheet" href="css/pendientes.css?v=3">
 </head>
 <body>
 <!--pagina de inicio personalizada
-cajon con agenda personal (incluye los turnos de trabajo y los proximos partidos de futbol)
+cajon con el titulo "Vancho" (columna izquierda, fila de arriba, chico)
 cajon de pendientes (lista personal + cambio de divisa y hora de Colombia abajo)
 cajon con pronostico del clima
+cajon con agenda personal (incluye los turnos de trabajo y los proximos partidos de futbol),
+  ocupa toda la columna derecha, de arriba a abajo de la pantalla
 esta pagina estara alojada en github pages y en github actions un robot enviara un json con python para actualizar diariamente esta pagina en mi pagina de inicio de mi navegador
 -->
 
-<header>
-    <h1>Mi Panel</h1>
-</header>
-
   <main class="panel">
 
-    <!-- La posicion visual de cada cajon (columna angosta/ancha, fila de arriba/abajo) la
-         define "grid-column"/"grid-row" en el archivo css de ESE cajon (no aqui). El orden de
+    <!-- La posicion visual de cada cajon (columna angosta/ancha, que fila) la define
+         "grid-column"/"grid-row" en el archivo css de ESE cajon (no aqui). El orden de
          estas <section> solo importa en movil, donde se apilan tal cual aparecen aqui. -->
+    <section class="cajon" id="titulo">
+      <h1>Vancho<span class="subtitulo">panel personal</span></h1>
+    </section>
     <section class="cajon" id="pendientes"></section>
-    <section class="cajon" id="agenda"></section>
     <section class="cajon" id="clima"></section>
+    <section class="cajon" id="agenda"></section>
 
   </main>
-<script src="js/auto-refresh.js"></script>
-<script src="js/clima.js"></script>
-<script src="js/datos-festivos.js"></script>
-<script src="js/datos-agenda.js"></script>
+<script src="js/auto-refresh.js?v=1"></script>
+<script src="js/clima.js?v=2"></script>
+<script src="js/datos-festivos.js?v=1"></script>
+<script src="js/datos-agenda.js?v=1"></script>
+<script src="js/datos-partidos.js?v=1"></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
-<script src="js/pendientes.js"></script>
-<script src="js/agenda.js"></script>
+<script src="js/pendientes.js?v=3"></script>
+<script src="js/agenda.js?v=3"></script>
 </body>
 </html>

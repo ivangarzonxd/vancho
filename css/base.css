@@ -16,29 +16,36 @@
   padding: 0; /* quita el padding por defecto que trae cada navegador */
 }
 
-/* Paleta de colores: cambiar un valor aqui lo cambia en toda la pagina */
+/* Paleta de colores: cambiar un valor aqui lo cambia en toda la pagina.
+   3 niveles de fondo, de mas oscuro a mas claro (para que cada capa se
+   distinga de la que tiene detras): pagina -> cajon -> elemento interno
+   (celda de dia, tarjeta de clima, campo de texto, tarjeta de pendiente). */
 :root {
-  --bg: #0f1115; /* color de fondo general de la pagina */
-  --bg-cajon: #1a1d24; /* color de fondo de cada cajon */
+  --bg: #0f1115; /* fondo general de la PAGINA (nunca lo uses en un elemento interno) */
+  --bg-cajon: #1a1d24; /* fondo de cada cajon */
+  --bg-cajon-2: #14161c; /* tono oscuro usado como texto sobre fondos claros (ver css/titulo.css) */
+  --bg-elemento: #262b35; /* fondo de un elemento DENTRO de un cajon: celda, tarjeta, campo... */
   --borde: #2a2e37; /* color del borde de los cajones y separadores */
   --texto: #e4e6eb; /* color de texto principal */
   --texto-secundario: #9aa0ac; /* color de texto secundario/apagado */
-  --acento: #7c9eff; /* color de acento (titulos, valores destacados, hover) */
+  --acento: #6C63FF; /* color de acento (titulos, valores destacados) */
+  /* Relieve "hundido", para los elementos INTERNOS (celda de dia, tarjeta de clima,
+     campo de texto, item de pendiente): el espejo del bisel de .cajon de mas abajo.
+     Alli la esquina de arriba-izquierda es la CLARA (le pega la luz) y abajo-derecha
+     la oscura (relieve que sobresale). Aqui es al reves: arriba-izquierda oscura
+     (la luz no entra al hueco) y abajo-derecha con un filo clarito (lo poco que
+     rebota) - eso es lo que lee el ojo como "hundido" en vez de "salido". */
+  --relieve-hundido:
+    inset 1.5px 1.5px 0 rgba(0, 0, 0, 0.5),
+    inset -1.5px -1.5px 0 rgba(255, 255, 255, 0.06);
 }
 
 /* Fondo, color de texto y tipografia base de toda la pagina */
 body {
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif; /* fuente del sistema, sin cargar fuentes externas */
-  background: var(--bg); /* pinta el fondo con el color base */
+  background: var(--bg); /* color solido, sin degradado */
   color: var(--texto); /* color de texto por defecto */
   padding: 1.25rem; /* margen interno alrededor de todo el contenido de la pagina */
-}
-
-/* Titulo grande de arriba de la pagina (no el de cada cajon) */
-header h1 {
-  font-size: 1.25rem; /* tamaño del titulo "Mi Panel" */
-  font-weight: 600; /* grosor semi-negrita del titulo */
-  margin-bottom: 0.75rem; /* separacion entre el titulo y los cajones de abajo */
 }
 
 /* Contenedor de todos los cajones. En escritorio se convierte en cuadricula (ver media query abajo) */
@@ -54,21 +61,24 @@ header h1 {
   gap: 0.6rem; /* separacion entre esos cajones */
 }
 
-/* La caja generica de CUALQUIER cajon (fondo, borde, esquinas, padding).
+/* La caja generica de CUALQUIER cajon (fondo, borde, esquinas, padding, sombra).
    Todos los cajones la heredan; ninguno deberia redefinir esto en su propio css. */
 .cajon {
-  background: var(--bg-cajon); /* fondo propio de cada cajon */
-  border: 1px solid var(--borde); /* borde fino alrededor del cajon */
-  border-radius: 16px; /* esquinas redondeadas */
+  background: var(--bg-cajon); /* color solido, sin degradado */
+  border: 1px solid rgba(255, 255, 255, 0.08); /* borde fino, separa el cajon del fondo */
+  border-radius: 18px; /* esquinas redondeadas */
   padding: 0.65rem; /* espacio interno entre el borde y el contenido */
-  transition: border-color 0.2s ease; /* anima el cambio de color del borde al pasar el mouse */
+  /* Esto ya NO es una sombra detras del cajon: es un brillo/relieve EN EL BORDE,
+     hacia adentro (inset), que simula que le pega luz por la esquina de
+     arriba-izquierda (linea clara) mientras la esquina de abajo-derecha queda en
+     sombra (linea oscura). Ese contraste entre un borde claro y uno oscuro es lo
+     que el ojo lee como volumen/relieve: el cajon se ve "labrado", con cuerpo,
+     como si tuviera un canto en 3D en vez de ser un rectangulo plano. */
+  box-shadow:
+    inset 1.5px 1.5px 0 rgba(255, 255, 255, 0.28),
+    inset -1.5px -1.5px 0 rgba(0, 0, 0, 0.7);
   flex: 1 1 0; /* permite que el cajon crezca/encoja de forma pareja dentro de su fila */
   min-width: 0; /* evita que el contenido interno fuerce un ancho minimo y rompa el layout */
-}
-
-/* Resalta el borde del cajon cuando el mouse pasa por encima */
-.cajon:hover {
-  border-color: var(--acento); /* cambia el color del borde al color de acento */
 }
 
 /* Titulo de CUALQUIER cajon ("Clima", "Agenda", "Pendientes"...). Un solo cambio aqui
@@ -79,6 +89,7 @@ header h1 {
   text-transform: uppercase; /* fuerza el texto a mayusculas */
   letter-spacing: 0.05em; /* separa un poco las letras, look mas "label" */
   color: var(--acento); /* pinta el titulo con el color de acento */
+  text-align: center; /* centra el titulo dentro del cajon */
   margin-bottom: 0.5rem; /* separacion entre el titulo y el contenido del cajon */
   flex-shrink: 0; /* evita que el titulo se comprima si el cajon anda corto de alto */
 }
@@ -146,21 +157,26 @@ header h1 {
     height: 100%; /* la pagina ocupa exactamente el alto de la ventana, ni mas ni menos */
   }
   body {
-    display: flex; /* header y panel se acomodan en columna dentro del alto fijo */
-    flex-direction: column; /* header arriba, panel de cajones abajo */
+    display: flex; /* el panel (unico hijo directo del body) ocupa el alto fijo disponible */
+    flex-direction: column;
     /* overflow: hidden; bloquea cualquier scroll a nivel de pagina */
   }
-  header {
-    flex-shrink: 0; /* el titulo de arriba nunca se comprime, conserva su alto */
-  }
   .panel {
-    flex: 1; /* el panel ocupa todo el alto restante debajo del header */
+    /* el titulo ya no es un header aparte: es la primera fila de esta misma cuadricula
+       (ver css/titulo.css), asi que el panel ocupa TODO el alto del body */
+    flex: 1;
     min-height: 0; /* permite que el panel se pueda encoger dentro del flex sin desbordar */
     display: grid; /* activa la cuadricula invisible de cajones */
     grid-template-columns: 1fr 4fr;
-    grid-template-rows: 1fr 1fr; 
+    /* 3 filas en la columna izquierda: titulo (automatica, solo lo que ocupe su
+       contenido), pendientes (la mas alta) y clima (mas bajo, le sobraba espacio) */
+    grid-template-rows: auto 3fr 2fr;
     gap: 0.6rem; /* separacion entre cajones de la cuadricula */
-    overflow: hidden; /* la cuadricula misma no scrollea, solo sus cajones si lo declaran */
+    /* SIN overflow:hidden aqui: como los cajones tocan el borde de esta cuadricula,
+       eso recortaba la sombra de cada cajon justo donde deberia verse (dejaba ver
+       apenas una raya en el gap entre cajones). No hace falta de todos modos: cada
+       .cajon ya tiene su propio overflow:hidden mas abajo para su contenido interno,
+       y el tamaño de la cuadricula ya esta fijo (fr), asi que nada la desborda. */
   }
   .cajon {
     min-width: 0; /* evita que el contenido fuerce un ancho minimo dentro de su celda */

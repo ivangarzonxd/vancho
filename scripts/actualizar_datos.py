@@ -30,15 +30,34 @@ for componente in calendario.walk():
         tipo = "evento"
         nota = titulo
 
-    dtstart = componente.get("dtstart").dt
+    dtstart_prop = componente.get("dtstart")
+    dtstart = dtstart_prop.dt
 
     if isinstance(dtstart, datetime):
+        # Guardado ANTES de tocar nada, solo para el mensaje de diagnostico de abajo.
+        tzinfo_crudo = dtstart.tzinfo
+        tzid_crudo = dtstart_prop.params.get("TZID")
+
         if dtstart.tzinfo is None:
-            dtstart = dtstart.replace(tzinfo=ZONA)
-        else:
-            dtstart = dtstart.astimezone(ZONA)
+            # Un dtstart "naive" (sin zona horaria) NO significa que ya este en
+            # Europe/Madrid: significa que la libreria icalendar no pudo resolver
+            # el TZID del evento a una zona conocida. Si el evento SI trae un TZID
+            # (ej. "America/Bogota", que es lo que usa tu cuenta de Google por
+            # defecto), hay que interpretar la hora tal cual en ESA zona antes de
+            # convertirla a Madrid — si no, la hora queda desplazada varias horas.
+            zona_origen = ZoneInfo(str(tzid_crudo)) if tzid_crudo else ZONA
+            dtstart = dtstart.replace(tzinfo=zona_origen)
+        dtstart = dtstart.astimezone(ZONA)
         fecha = dtstart.date()
         hora = dtstart.strftime("%H:%M")
+
+        # DIAGNOSTICO TEMPORAL: se puede borrar esta linea una vez se confirme que
+        # las horas ya pintan bien. Se ve en el log de GitHub Actions (pestaña
+        # "Actions" del repo -> la corrida mas reciente -> el paso que ejecuta este
+        # script). Muestra la hora TAL CUAL vino del calendario (antes de tocarla) y
+        # en que queda despues de la conversion, para poder ver EXACTAMENTE donde
+        # se desplaza si algun evento sigue pintando con la hora que no es.
+        print(f"DEBUG hora: '{nota}' | dtstart crudo={dtstart_prop.dt} (tzinfo={tzinfo_crudo!r}, TZID del ics={tzid_crudo!r}) | -> queda fecha={fecha} hora={hora} (Europe/Madrid)")
     else:
         fecha = dtstart
         hora = None

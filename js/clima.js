@@ -66,19 +66,24 @@ fetch(`https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&d
       const max = datos.daily.temperature_2m_max[i];
       const min = datos.daily.temperature_2m_min[i];
       const pct = datos.daily.precipitation_probability_max[i];
-      const horaTexto = horaConLluvia(fecha);
+      // La hora del chubasco solo se muestra si ese dia hay bastante probabilidad
+      // de lluvia (>30%); si no, no aporta nada y solo ocupa espacio.
+      const horaTexto = pct > 30 ? horaConLluvia(fecha) : "";
       const ropa = queMePonerme(max, pct);
+      // Cada prenda (separadas por coma en queMePonerme) en su propio renglon,
+      // en vez de una sola linea larga cortada con "..." (ver .dia-ropa en clima.css).
+      const ropaRenglones = ropa.split(",").map(p => p.trim()).filter(Boolean).map(p => `<div>${p}</div>`).join("");
 
       return `
         <div class="dia-clima">
           <div class="dia-fecha">${nombreDia}</div>
           <div class="dia-emoji">${emoji}</div>
-          <div class="dia-temp">⬆ ${max}° <span class="temp-min"><br> ⬇ ${min}°</span></div>
+          <div class="dia-temp">⬆ ${max}°<span class="temp-min">⬇ ${min}°</span></div>
           <div class="dia-lluvia">
-            <span class="lluvia-pct">${pct}%</span>
+            <span class="lluvia-pct">💧 ${pct}%</span>
             ${horaTexto ? `<span class="lluvia-hora">${horaTexto}</span>` : ""}
           </div>
-          <div class="dia-ropa">${ropa}</div>
+          <div class="dia-ropa">${ropaRenglones}</div>
         </div>
       `;
     });

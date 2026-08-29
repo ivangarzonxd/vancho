@@ -6,10 +6,12 @@
    cada uno con un emoji segun su tipo (ver emojiTipo() en agenda.js).
    ================================================================ */
 
-/* Posicion del cajon en la cuadricula de 2 columnas: la ancha (col. 2), a toda altura (2 filas) */
+/* Posicion del cajon en la cuadricula: la columna ancha (2), cubriendo TODAS las
+   filas de la izquierda de punta a punta (desde la primera linea hasta la ultima),
+   para que llegue hasta el techo de la pantalla. */
 #agenda {
-  grid-column: 2; 
-  grid-row: span 2;
+  grid-column: 2;
+  grid-row: 1 / -1;
 }
 
 /* Fila con los nombres de los 7 dias, arriba del calendario */
@@ -34,38 +36,57 @@
   margin-top: 0.3rem; /* separacion respecto a la cabecera de dias */
 }
 
-/* Cuadricula de 7 columnas x 6 filas (un dia por celda) */
+/* Cuadricula de 7 columnas x 6 filas (un dia por celda). Se ven 4 semanas
+   completas de una vez; las otras 2 quedan con scroll dentro de .dias-scroll. */
 .calendario {
   display: grid; /* activa la cuadricula del calendario */
   grid-template-columns: repeat(7, 1fr); /* 7 columnas iguales, una por dia de la semana */
+  grid-template-rows: repeat(6, 1fr); /* 6 semanas, todas la misma altura */
   gap: 0.3rem; /* separacion entre celdas de dias */
+  /* 6 semanas / 4 visibles = 1.5: el calendario mide un 50% MAS que lo que se
+     alcanza a ver de una sola vez. Al ser un porcentaje (no un alto fijo en rem),
+     esto se cumple igual en cualquier tamaño de pantalla: siempre 4 semanas
+     visibles, nunca mas ni menos, aunque cambies de monitor. */
+  height: 150%;
 }
 
 /* Una celda de un dia individual del calendario */
 .dia-calendario {
-  height: 5.5rem; /* espacio para 3-4 renglones cuando metamos notas */
+  /* Sin alto fijo: por defecto, un item de una cuadricula (grid) "estira" para
+     llenar exactamente el alto de su fila. Como esa fila es proporcional (ver
+     .calendario), la celda tambien lo es: nunca queda fija en rem, se adapta
+     sola al tamaño real de la pantalla. */
   width: 100%; /* ocupa todo el ancho de su columna en la cuadricula */
+  min-width: 0; /* clave: sin esto, un evento con texto largo puede forzar la columna a ensancharse */
   box-sizing: border-box; /* el padding no agranda el tamaño final de la celda */
   display: flex; /* organiza numero de dia y eventos en columna */
   flex-direction: column; /* numero de dia arriba, eventos abajo */
   align-items: flex-start; /* alinea el contenido a la izquierda de la celda */
   justify-content: flex-start; /* agrupa el contenido arriba de la celda */
-  padding: 0.3rem; /* espacio interno de la celda */
-  border-radius: 6px; /* esquinas redondeadas de la celda */
+  padding: 0.3rem; /* espacio interno de la celda (numero y eventos comparten este mismo margen izquierdo) */
+  border-radius: 8px; /* esquinas redondeadas de la celda */
   font-size: 0.8rem; /* tamaño de letra base dentro de la celda */
-  background: var(--bg); /* fondo distinto al del cajon, para diferenciar cada dia */
+  border: 2px solid transparent; /* mismo grosor que ".hoy" de abajo, asi ningun dia se corre al resaltar hoy */
+  background: var(--bg-elemento); /* fondo distinto al del cajon, para diferenciar cada dia */
+  box-shadow: var(--relieve-hundido); /* se ve como un hueco, en vez de un rectangulo plano (ver base.css) */
 }
 
-/* Celda de un dia que ya paso */
-.dia-calendario.pasado {
-  opacity: 0.35; /* atenua visualmente los dias que ya pasaron */
+/* Celda de un dia que ya paso: ya NO se apaga la celda entera (con el fondo
+   oscuro de por si, un fondo semitransparente se perdia casi del todo contra
+   el cajon). Solo se atenua el CONTENIDO (numero y eventos, ver mas abajo);
+   la celda conserva su tamaño y su fondo normal, se sigue viendo el dia. */
+.dia-calendario.pasado .numero-dia,
+.dia-calendario.pasado .fila-evento {
+  opacity: 0.4; /* atenua solo el texto, para marcar que ya paso sin desaparecer */
 }
 
-/* Celda del dia de hoy, resaltada */
+/* Celda del dia de hoy: en vez de rellenarla de color (un bloque grande de
+   color se siente pesado en una cuadricula de 42 celdas), se marca con un
+   borde de color. El fondo y el texto siguen siendo los mismos que cualquier
+   otro dia, asi que se lee exactamente igual, solo que con un borde que avisa
+   "estas aqui". */
 .dia-calendario.hoy {
-  background: var(--acento); /* fondo con el color de acento para que resalte */
-  color: #0f1115; /* texto oscuro para que se lea bien sobre el fondo claro de acento */
-  font-weight: 700; /* negrita para reforzar que es el dia actual */
+  border-color: var(--acento); /* el borde transparente de arriba pasa a ser de color: eso ya basta para marcarlo */
 }
 
 /* Celda que es el primer dia de un mes nuevo */
@@ -76,6 +97,7 @@
 /* El numero del dia dentro de la celda (ej: "25") */
 .numero-dia {
   font-weight: 600; /* semi-negrita para que se distinga del texto de los eventos */
+  line-height: 1; /* alto de linea ajustado, sin aire extra arriba/abajo del numero */
 }
 
 /* Lista de eventos de ese dia, con su propio scroll interno si no caben */
@@ -84,18 +106,18 @@
   display: flex; /* apila los eventos del dia */
   flex-direction: column; /* un evento debajo de otro */
   gap: 0.1rem; /* separacion chica entre eventos */
-  overflow-y: auto; /* scroll interno si hay mas eventos de los que caben en la celda */
-  max-height: 2.9rem; /* limite de alto antes de que aparezca el scroll */
+  flex: 1; /* ocupa TODO el alto que sobre de la celda (que ahora es proporcional) */
+  min-height: 0; /* permite que se encoja sin desbordar la celda */
+  overflow-y: auto; /* scroll interno si, aun con ese alto, hay mas eventos de los que caben */
   width: 100%; /* ocupa todo el ancho de la celda */
 }
 
 /* Un evento individual dentro de un dia (el emoji al inicio indica el tipo) */
 .fila-evento {
   font-size: 0.6rem; /* tamaño chico, hay poco espacio por celda */
-  line-height: 1.15; /* interlineado ajustado */
-  padding-left: 0.25rem; /* pequeño respiro a la izquierda del emoji */
-  white-space: nowrap; /* evita que el texto del evento se parta en dos lineas */
+  line-height: 0.75rem; /* alto de linea fijo, para que las lineas de texto queden parejas */
+  white-space: nowrap; /* evita que el texto del evento se parta en dos lineas (y ensanche la celda) */
   overflow: hidden; /* esconde el texto que no cabe en el ancho de la celda */
   text-overflow: ellipsis; /* muestra "..." cuando el texto del evento se corta */
-  color: var(--texto-secundario); /* color apagado para el texto del evento */
+  color: var(--texto); /* texto principal (claro): el apagado se leia casi del mismo tono que el fondo de la celda */
 }

@@ -23,9 +23,16 @@ jobs:
         env:
           GOOGLE_CALENDAR_ICS_URL: ${{ secrets.GOOGLE_CALENDAR_ICS_URL }}
 
+      # Si esto falla (clave invalida, API caida, etc.) no debe tumbar todo el
+      # job: la agenda igual debe quedar actualizada y comiteada.
+      - run: python scripts/actualizar_partidos.py
+        continue-on-error: true
+        env:
+          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+
       - run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add js/datos-agenda.js
-          git diff --quiet --cached || git commit -m "Actualizar agenda automaticamente"
+          git add js/datos-agenda.js js/datos-partidos.js
+          git diff --quiet --cached || git commit -m "Actualizar agenda y partidos automaticamente"
           git push

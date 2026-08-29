@@ -7,10 +7,11 @@
    separado por una linea, el cambio EUR -> COP y la hora de Colombia.
    ================================================================ */
 
-/* Posicion del cajon en la cuadricula de 2 columnas: la angosta (col. 1), fila de arriba */
+/* Posicion del cajon en la cuadricula: la columna angosta (1), fila del medio
+   (la fila 1 la ocupa ahora el cajon del titulo, ver css/titulo.css) */
 #pendientes {
   grid-column: 1;
-  grid-row: 1;
+  grid-row: 2;
 }
 
 /* Texto de "Cargando..." o "No se pudo conectar" mientras no hay datos aun */
@@ -23,16 +24,17 @@
 .pendientes-agregar {
   display: flex; /* pone el input y el boton en la misma linea */
   gap: 0.35rem; /* separacion entre el input y el boton */
-  margin-bottom: 0.5rem; /* separacion respecto a la lista de pendientes de abajo */
-  flex-shrink: 0; /* esta fila nunca se comprime, aunque la lista de abajo necesite mas espacio */
+  margin-top: 0.5rem; /* ahora va AL FINAL, debajo de la lista: separacion respecto a ella */
+  flex-shrink: 0; /* esta fila nunca se comprime, aunque la lista de arriba necesite mas espacio */
 }
 
 /* El campo de texto donde se escribe el pendiente nuevo */
 .pendientes-agregar input {
   flex: 1; /* el input ocupa todo el ancho disponible, dejandole su tamaño fijo al boton */
   min-width: 0; /* permite que el input se encoja sin forzar el ancho del cajon */
-  background: var(--bg); /* fondo distinto al del cajon, para que se note que es un campo */
+  background: var(--bg-elemento); /* fondo distinto al del cajon, para que se note que es un campo */
   border: 1px solid var(--borde); /* borde fino alrededor del campo */
+  box-shadow: var(--relieve-hundido); /* se ve como un hueco, como si el texto se escribiera "adentro" (ver base.css) */
   border-radius: 0.35rem; /* esquinas redondeadas del campo */
   color: var(--texto); /* color del texto que se escribe */
   padding: 0.3rem 0.5rem; /* espacio interno del campo */
@@ -44,15 +46,25 @@
   outline: 1px solid var(--acento); /* contorno con el color de acento al escribir */
 }
 
-/* El boton de "+" para confirmar que se agregue el pendiente */
+/* El boton de "+" para confirmar que se agregue el pendiente. A proposito discreto
+   (mismo fondo y borde que el input de al lado): no necesita gritar, ya se explica
+   solo por estar pegado al campo de texto. Solo se resalta al pasar el mouse. */
 .pendientes-agregar button {
-  background: var(--acento); /* fondo con el color de acento, para que se note el boton */
-  color: var(--bg); /* texto oscuro para que contraste con el fondo claro del boton */
-  border: none; /* sin borde, el fondo de color ya lo delimita */
+  background: var(--bg-elemento); /* mismo fondo que el input, no compite visualmente con el */
+  color: var(--acento); /* el simbolo "+" si lleva el color de acento, pero sin relleno solido */
+  border: 1px solid var(--borde); /* mismo borde fino que el input */
   border-radius: 0.35rem; /* esquinas redondeadas del boton */
   width: 1.8rem; /* ancho fijo, boton cuadrado chico */
   font-size: 1rem; /* tamaño del simbolo "+" */
   cursor: pointer; /* el mouse cambia a "mano" al pasar por encima, indicando que es clickeable */
+}
+
+/* Recien aqui, al pasar el mouse, se rellena de color: la confirmacion visual
+   aparece cuando el usuario ya esta interactuando, no todo el tiempo. */
+.pendientes-agregar button:hover {
+  background: var(--acento);
+  color: var(--bg-cajon-2);
+  border-color: var(--acento);
 }
 
 /* Envoltorio de toda la seccion de arriba (input + lista); ocupa el alto
@@ -83,9 +95,9 @@
   align-items: center; /* centra verticalmente esos tres elementos */
   gap: 0.4rem; /* separacion entre la manija, el texto y el boton de borrar */
   font-size: 0.85rem; /* tamaño de letra del pendiente */
-  border-left: 3px solid var(--acento); /* franja de color a la izquierda, marca visual */
   padding: 0.2rem 0.4rem; /* espacio interno de la tarjeta */
-  background: var(--bg); /* fondo distinto al del cajon, para diferenciar cada tarjeta */
+  background: var(--bg-elemento); /* fondo distinto al del cajon, para diferenciar cada tarjeta */
+  box-shadow: var(--relieve-hundido); /* se ve como un hueco, en vez de una tarjeta plana (ver base.css) */
   border-radius: 0.25rem; /* esquinas redondeadas de la tarjeta */
 }
 
@@ -138,24 +150,20 @@
   border-top: 1px solid var(--borde); /* linea que separa visualmente las dos secciones del cajon */
 }
 
-/* Contenedor de los dos datos sueltos (euro, hora) */
+/* Contenedor de los dos datos sueltos (cambio de divisa, hora). Antes cada uno
+   era "etiqueta arriba + valor grande abajo" (2 lineas); ahora cada dato es UNA
+   sola linea corta ("1 EUR = 3.637,35 COP", "05:49 p. m. Colombia"), asi que
+   este bloque completo ocupa bastante menos alto y le deja mas espacio a la
+   lista de pendientes de arriba. */
 .otros-contenido {
   display: flex; /* apila los dos datos */
   flex-direction: column; /* uno debajo del otro */
-  gap: 0.6rem; /* separacion entre cada dato */
+  gap: 0.3rem; /* separacion chica entre cada dato: son solo 2 lineas cortas */
 }
 
-/* Un dato individual (etiqueta + valor), ej: "1 EUR" / "3.548 COP" */
+/* Un dato individual, ya armado como una sola linea de texto */
 .otros-item {
-  display: flex; /* organiza la etiqueta y el valor en columna */
-  flex-direction: column; /* etiqueta arriba, valor grande abajo */
-  gap: 0.2rem; /* separacion entre la etiqueta y el valor */
-}
-
-/* El valor grande y destacado de cada dato. La etiqueta de arriba
-   usa .etiqueta-secundaria (ver base.css), no hace falta repetirla aqui. */
-.otros-valor {
-  font-size: 1.3rem; /* tamaño grande para que el valor resalte (un poco mas chico que antes, ahora comparte cajon) */
-  font-weight: 700; /* negrita */
-  color: var(--acento); /* color de acento para destacarlo */
+  font-size: 1rem; /* tamaño normal de lectura, no es letra chica de apoyo */
+  font-weight: 700; /* bien negrita, se siguen sintiendo como un dato "destacado" */
+  color: var(--acento); /* color de acento */
 }

@@ -61,14 +61,16 @@ function renderizarPendientes() {
     </li>
   `).join("");
 
+  // La lista va PRIMERO y el campo de agregar AL FINAL (pegado a la linea que separa
+  // esta seccion de la de divisa/hora, ver #pendientes-agregar en pendientes.css).
   document.getElementById("pendientes-lista-wrap").innerHTML = `
-    <div class="pendientes-agregar">
-      <input type="text" id="pendiente-input" placeholder="Nuevo pendiente..." maxlength="120" />
-      <button id="pendiente-agregar-btn" aria-label="Agregar pendiente">+</button>
-    </div>
     <ul class="lista-pendientes" id="lista-pendientes">
       ${filas || '<li class="pendiente-vacia">Sin pendientes</li>'}
     </ul>
+    <div class="pendientes-agregar">
+      <input type="text" id="pendiente-input" maxlength="120" />
+      <button id="pendiente-agregar-btn" aria-label="Agregar pendiente">+</button>
+    </div>
   `;
 
   // Como el innerHTML se reemplazo entero, hay que volver a enganchar los eventos cada vez.
@@ -178,16 +180,11 @@ async function cargarDivisaHora() {
     // si falla la peticion, se deja el texto "No disponible" de arriba
   }
 
+  // Cada dato en una sola linea corta: "1 EUR = 3.637,35 COP" y "05:49 p. m. Colombia".
   document.getElementById("pendientes-otros-wrap").innerHTML = `
     <div class="otros-contenido">
-      <div class="otros-item">
-        <span class="otros-etiqueta etiqueta-secundaria">1 EUR</span>
-        <span class="otros-valor">${valorCambio}</span>
-      </div>
-      <div class="otros-item">
-        <span class="otros-etiqueta etiqueta-secundaria">Hora Colombia</span>
-        <span class="otros-valor" id="otros-hora">${horaColombiaTexto()}</span>
-      </div>
+      <div class="otros-item">1 EUR = ${valorCambio}</div>
+      <div class="otros-item"><span id="otros-hora">${horaColombiaTexto()}</span> Colombia</div>
     </div>
   `;
 

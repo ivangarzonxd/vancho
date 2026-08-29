@@ -4,12 +4,18 @@
    7 dias (fecha, emoji, temperatura, probabilidad+hora de lluvia y
    sugerencia de ropa). Si no caben todas las tarjetas, este cajon
    scrollea horizontalmente (la unica excepcion junto con agenda).
+   Cada campo de la tarjeta tiene una altura reservada fija, para que las 7
+   tarjetas queden perfectamente alineadas entre si aunque el texto de alguna
+   ocupe una linea mas que otra. Como esa altura es fija (no depende del
+   contenido), el espacio libre se reparte parejo entre todos los campos
+   (justify-content: space-between en .dia-clima): la fecha queda pegada
+   arriba, la ropa pegada abajo, y la tarjeta usa TODO su alto disponible.
    ================================================================ */
 
-/* Ancho del cajon dentro de la cuadricula: ocupa 4 columnas de 7 */
+/* Posicion del cajon en la cuadricula: columna angosta (1), fila de abajo (3) */
 #clima {
-  grid-column: 1; /* columna angosta */
-  grid-row: 2; /* fila de abajo */
+  grid-column: 1;
+  grid-row: 3;
 }
 
 /* Organiza el titulo y el contenido del cajon en columna */
@@ -18,87 +24,117 @@
   flex-direction: column; /* titulo arriba, tarjetas de dias abajo */
 }
 
-/* Envoltorio con el scroll horizontal cuando no caben las 7 tarjetas */
+/* Envoltorio con el scroll horizontal cuando no caben las 7 tarjetas.
+   Lleva un poco de aire arriba/abajo para que las tarjetas no queden
+   pegadas al borde del cajon ni al propio scroll. */
 .clima-dias-wrap {
   flex: 1; /* ocupa todo el alto restante del cajon debajo del titulo */
   min-height: 0; /* permite que se pueda encoger sin desbordar el cajon */
   overflow-x: auto; /* habilita el scroll horizontal cuando las tarjetas no caben */
   overflow-y: hidden; /* nunca scrollea verticalmente */
+  padding: 0.25rem 0.1rem 0.35rem; /* separacion de las tarjetas respecto al cajon y al scroll */
 }
 
-/* Fila con una tarjeta por dia */
+/* Fila con una tarjeta por dia. Cuadricula (no flex) con ancho en PORCENTAJE, para
+   que siempre se vean exactamente 4 tarjetas completas y las otras 3 queden con
+   scroll horizontal - sea cual sea el tamaño de pantalla (nada de anchos fijos en
+   rem que dependan del monitor, igual que se hizo con las 6 semanas de la agenda). */
 .clima-dias {
-  display: flex; /* pone las tarjetas en fila horizontal */
+  display: grid; /* cuadricula: permite que cada tarjeta mida un % exacto del ancho */
+  grid-template-columns: repeat(7, 1fr); /* 7 tarjetas, todas el mismo ancho entre si */
   gap: 0.6rem; /* separacion entre tarjetas */
   height: 100%; /* ocupa todo el alto del envoltorio con scroll */
+  /* 7 tarjetas / 4 visibles = 1.75: el ancho total es un 75% MAS que lo que se ve
+     de una sola vez. Al ser un porcentaje del ancho REAL del cajon (no un rem fijo),
+     esto se cumple en cualquier pantalla: siempre 4 tarjetas visibles, ni mas ni menos. */
+  width: 175%;
 }
 
 /* Tarjeta individual de un dia */
 .dia-clima {
-  flex: 0 0 auto; /* la tarjeta no se estira ni se encoge, mantiene su ancho propio */
-  width: 5.5rem; /* ancho fijo de cada tarjeta */
-  background: var(--bg); /* fondo un poco distinto al del cajon, para diferenciar la tarjeta */
-  border-radius: 10px; /* esquinas redondeadas de la tarjeta */
-  padding: 0.75rem 0.4rem; /* espacio interno vertical y horizontal de la tarjeta */
+  background: var(--bg-elemento); /* fondo distinto al del cajon, para diferenciar la tarjeta */
+  box-shadow: var(--relieve-hundido); /* se ve como un hueco, en vez de una tarjeta plana (ver base.css) */
+  border-radius: 12px; /* esquinas redondeadas de la tarjeta */
+  padding: 0.55rem 0.4rem; /* espacio interno de la tarjeta */
   display: flex; /* organiza fecha/emoji/temp/lluvia/ropa en columna */
   flex-direction: column; /* apila los elementos de la tarjeta de arriba a abajo */
   align-items: center; /* centra horizontalmente cada elemento dentro de la tarjeta */
-  justify-content: space-between; /* reparte el espacio vertical sobrante entre los elementos */
+  /* space-between: como cada campo ya tiene una altura fija/reservada (ver abajo),
+     todas las tarjetas miden exactamente lo mismo campo por campo, asi que repartir
+     el espacio libre entre ellos es seguro (no descuadra nada) - y asi la fecha
+     queda pegada arriba, la ropa pegada abajo, y la tarjeta usa TODO el alto
+     disponible en vez de dejar aire libre al final. */
+  justify-content: space-between;
   text-align: center; /* centra el texto dentro de cada elemento */
-  gap: 0.35rem; /* separacion entre fecha/emoji/temp/lluvia/ropa */
+  gap: 0.15rem; /* separacion MINIMA entre campos (space-between reparte lo que sobre) */
 }
 
 /* Texto de la fecha del dia (ej: "Lun 25 ago") */
 .dia-fecha {
-  font-size: 0.7rem; /* tamaño chico */
+  font-size: 0.68rem; /* tamaño chico */
   color: var(--texto-secundario); /* color apagado */
   text-transform: capitalize; /* pone en mayuscula la primera letra */
   white-space: nowrap; /* evita que la fecha se parta en dos lineas */
 }
 
-/* Emoji grande que representa el clima del dia */
+/* Emoji que representa el clima del dia */
 .dia-emoji {
-  font-size: 1.9rem; /* tamaño grande para que el emoji se note */
+  font-size: 1.6rem; /* tamaño grande para que el emoji se note */
   line-height: 1; /* evita espacio extra arriba/abajo del emoji */
 }
 
-/* Temperatura maxima del dia */
+/* Temperatura maxima y minima del dia, en dos lineas (maxima arriba, minima abajo) */
 .dia-temp {
-  font-size: 0.9rem; /* tamaño de la temperatura maxima */
+  font-size: 0.78rem; /* tamaño de la temperatura maxima */
   font-weight: 700; /* negrita para que resalte */
+  line-height: 1.25; /* interlineado entre la linea de maxima y la de minima */
 }
 
-/* La temperatura minima, dentro de .dia-temp, en un estilo mas discreto */
+/* La temperatura minima: su propia linea, debajo de la maxima (no en la misma linea) */
 .dia-temp .temp-min {
+  display: block; /* fuerza su propia linea, sin depender de un <br> en el HTML */
+  font-size: 0.7rem; /* un poco mas chica que la maxima */
   font-weight: 400; /* peso normal, no negrita, para diferenciarla de la maxima */
   color: var(--texto-secundario); /* color apagado */
 }
 
-/* Porcentaje de lluvia arriba, hora del chubasco abajo (si aplica) */
+/* Porcentaje de lluvia arriba, hora del chubasco abajo (si aplica).
+   Alto reservado fijo (2 lineas) aunque ese dia no tenga hora de lluvia: asi el
+   siguiente elemento (la ropa) siempre arranca a la misma altura en todas las tarjetas. */
 .dia-lluvia {
   display: flex; /* organiza porcentaje y hora en columna */
   flex-direction: column; /* porcentaje arriba, hora abajo */
   align-items: center; /* centra ambos horizontalmente */
+  justify-content: flex-start; /* si falta la hora, el porcentaje no se re-centra: se queda arriba */
   line-height: 1.2; /* interlineado ajustado entre las dos lineas */
+  min-height: 1.55rem; /* espacio reservado para 2 lineas (porcentaje + hora), haya hora o no */
 }
 
-/* El numero de probabilidad de lluvia (ej: "40%") */
+/* El numero de probabilidad de lluvia (ej: "💧 40%") */
 .lluvia-pct {
-  font-size: 0.78rem; /* tamaño del porcentaje */
+  font-size: 0.75rem; /* tamaño del porcentaje */
   font-weight: 600; /* semi-negrita */
   color: var(--acento); /* color de acento para que se note el dato */
+  white-space: nowrap; /* el emoji + numero + "%" siempre en una sola linea */
 }
 
-/* El rango de horas del chubasco (ej: "14-17h") */
+/* El rango de horas del chubasco (ej: "14-17h"), solo aparece si hay bastante probabilidad */
 .lluvia-hora {
   font-size: 0.6rem; /* tamaño chico, dato secundario */
   color: var(--texto-secundario); /* color apagado */
   white-space: nowrap; /* evita que el rango de horas se corte en dos lineas */
 }
 
-/* Sugerencia de que ponerse ese dia */
+/* Sugerencia de que ponerse ese dia. Siempre una sola linea (con "..." si no cabe):
+   asi mide siempre lo mismo y no descuadra la tarjeta ni el resto de dias al alinear. */
 .dia-ropa {
-  font-size: 0.65rem; /* tamaño chico */
-  color: var(--texto-secundario); /* color apagado */
-  line-height: 1.2; /* interlineado ajustado si el texto ocupa dos lineas */
+  display: flex; /* cada prenda en su propio renglon, apiladas */
+  flex-direction: column;
+  align-items: center; /* centra cada renglon horizontalmente */
+  font-size: 0.7rem; /* un poco mas grande que antes (0.62rem) */
+  color: var(--texto); /* texto principal (claro): el apagado se leia muy tenue */
+  line-height: 1.25; /* interlineado entre renglones de prenda */
+  /* Reservado para el maximo posible: hasta 3 prendas (ej: "cortos, esqueleto, ☂️"),
+     para que la tarjeta no cambie de alto segun cuantas prendas toque ese dia. */
+  min-height: 2.65rem;
 }
