@@ -55,7 +55,19 @@ def proximos_partidos(equipo_id):
         timeout=30,
     )
     resp.raise_for_status()
-    return resp.json().get("response", [])
+    cuerpo = resp.json()
+
+    # DIAGNOSTICO: si el plan gratis no da permiso para este equipo/liga (o
+    # cualquier otro motivo), API-Football normalmente NO devuelve un error
+    # HTTP: devuelve 200 OK con "response" vacio y el motivo real dentro de
+    # "errors". Sin esto no hay forma de distinguir "0 partidos programados"
+    # de "el plan no deja consultar esto".
+    errores = cuerpo.get("errors")
+    if errores:
+        print(f"  -> errors de la API: {errores}")
+    print(f"  -> results={cuerpo.get('results')} paging={cuerpo.get('paging')}")
+
+    return cuerpo.get("response", [])
 
 
 eventos = []
