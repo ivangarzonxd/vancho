@@ -23,12 +23,11 @@ jobs:
         env:
           GOOGLE_CALENDAR_ICS_URL: ${{ secrets.GOOGLE_CALENDAR_ICS_URL }}
 
-      # Si esto falla (clave invalida, API caida, etc.) no debe tumbar todo el
-      # job: la agenda igual debe quedar actualizada y comiteada.
+      # Si esto falla (la API no oficial de ESPN cambia de forma, se cae, etc.)
+      # no debe tumbar todo el job: la agenda igual debe quedar comiteada.
+      # No necesita ninguna cuenta ni secreto: es una API publica sin clave.
       - run: python scripts/actualizar_partidos.py
         continue-on-error: true
-        env:
-          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
 
       - run: |
           git config user.name "github-actions[bot]"

@@ -1,141 +1,121 @@
-import os
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
 import requests
 
-API_KEY = os.environ["API_FOOTBALL_KEY"]
 ZONA = ZoneInfo("Europe/Madrid")
-BASE_URL = "https://v3.football.api-sports.io"
-CABECERAS = {"x-apisports-key": API_KEY}
+BASE_URL = "https://site.api.espn.com/apis/site/v2/sports/soccer"
 
-# Cuantos partidos futuros como maximo se guardan por equipo (de sobra para
-# las 6 semanas que muestra la agenda; los que caigan mas adelante
-# simplemente no encuentran celda y no se pintan, no estorban).
-MAX_PARTIDOS_POR_EQUIPO = 15
+# Hasta cuantos dias hacia adelante se piden partidos (igual que el horizonte
+# de 45 dias que ya usa scripts/actualizar_datos.py para la agenda de Google).
+RANGO_DIAS = 45
 
-# Equipos a seguir. "busqueda" es el texto que se le manda al buscador de
-# equipos de API-Football (GET /teams?search=...) para encontrar su id;
-# "nacional" marca que es una seleccion (para no confundirla con un club
-# que se llame igual, ej. clubes amateurs llamados "Colombia").
+# Ligas/competiciones que hay que consultar para cubrir a los 5 equipos.
+# Un mismo partido de Champions entre dos de "nuestros" equipos, por ejemplo,
+# solo se pide una vez por liga, no una vez por equipo.
+#
+# OJO: esto es la API "escondida" (no oficial, no documentada) que usa
+# espn.com para su propia pagina. No hace falta ninguna cuenta ni api key,
+# pero por lo mismo puede cambiar de un dia a otro sin aviso.
+LIGAS_A_CONSULTAR = [
+    # Real Madrid / Barcelona
+    "esp.1",                 # LaLiga
+    "uefa.champions",        # Champions League
+    "esp.copa_del_rey",      # Copa del Rey
+    "esp.super_cup",         # Supercopa de España
+    # Millonarios
+    "col.1",                 # Primera A de Colombia
+    "col.copa",              # Copa Colombia
+    "conmebol.libertadores", # Copa Libertadores
+    "conmebol.sudamericana", # Copa Sudamericana
+    # Inter Miami
+    "usa.1",                 # MLS
+    "concacaf.leagues.cup",  # Leagues Cup
+    "usa.open",              # US Open Cup
+    "concacaf.champions",    # Concacaf Champions Cup
+    # Seleccion Colombia
+    "fifa.friendly",         # Amistosos de selecciones
+    "fifa.worldq.conmebol",  # Eliminatorias Mundial (CONMEBOL)
+    "conmebol.america",      # Copa America
+]
+
+# "clave" es el texto (en minusculas) que debe estar CONTENIDO en el nombre
+# de un equipo de ESPN para identificarlo (ej. el nombre real en ESPN es
+# "Inter Miami CF", pero con que aparezca "inter miami" ya es suficiente).
 EQUIPOS_INTERES = [
-    {"busqueda": "Millonarios", "nombre": "Millonarios FC", "nacional": False},
-    {"busqueda": "Inter Miami", "nombre": "Inter Miami", "nacional": False},
-    {"busqueda": "Colombia", "nombre": "Selección Colombia", "nacional": True},
-    {"busqueda": "Real Madrid", "nombre": "Real Madrid", "nacional": False},
-    {"busqueda": "Barcelona", "nombre": "Barcelona", "nacional": False},
+    {"clave": "millonarios", "nombre": "Millonarios FC"},
+    {"clave": "inter miami", "nombre": "Inter Miami"},
+    {"clave": "colombia", "nombre": "Selección Colombia"},
+    {"clave": "real madrid", "nombre": "Real Madrid"},
+    {"clave": "barcelona", "nombre": "Barcelona"},
 ]
 
 
-def buscar_id_equipo(equipo):
-    """Busca el id de API-Football para un equipo por nombre. Devuelve None
-    si no se encuentra (o si la busqueda de una seleccion no trae ningun
-    resultado marcado como 'national')."""
+def partidos_de_liga(liga, desde, hasta):
+    """Trae todos los partidos programados de una liga/competicion en el
+    rango de fechas dado (formato AAAAMMDD), sin filtrar por equipo todavia."""
     resp = requests.get(
-        f"{BASE_URL}/teams",
-        headers=CABECERAS,
-        params={"search": equipo["busqueda"]},
+        f"{BASE_URL}/{liga}/scoreboard",
+        params={"dates": f"{desde}-{hasta}", "limit": 200},
         timeout=30,
     )
-    time.sleep(1.3)  # el plan gratis limita a 10 peticiones/minuto
+    time.sleep(1)  # cortesia: no hay limite publicado, pero mejor no abusar
     resp.raise_for_status()
-    resultados = resp.json().get("response", [])
-
-    for r in resultados:
-        info = r.get("team", {})
-        if equipo["nacional"] and info.get("national"):
-            return info.get("id")
-        if not equipo["nacional"] and not info.get("national"):
-            return info.get("id")
-
-    return None
+    return resp.json().get("events", [])
 
 
-def partidos_de_temporada(equipo_id, temporada):
-    """Trae TODOS los partidos de un equipo en una temporada dada (el plan
-    gratis de API-Football no da acceso al parametro 'next', asi que hay que
-    pedir por 'season' y filtrar los futuros nosotros mismos). "temporada" es
-    el año en que arranca la temporada segun la convencion de API-Football
-    (ej. la Liga española 2026-2027 se pide como season=2026)."""
-    resp = requests.get(
-        f"{BASE_URL}/fixtures",
-        headers=CABECERAS,
-        params={"team": equipo_id, "season": temporada},
-        timeout=30,
-    )
-    time.sleep(1.3)  # el plan gratis limita a 10 peticiones/minuto
-    resp.raise_for_status()
-    cuerpo = resp.json()
+hoy = datetime.now(ZONA).date()
+desde = hoy.strftime("%Y%m%d")
+hasta = (hoy + timedelta(days=RANGO_DIAS)).strftime("%Y%m%d")
 
-    # DIAGNOSTICO: si el plan gratis no da permiso para esto (o cualquier
-    # otro motivo), API-Football normalmente NO devuelve un error HTTP:
-    # devuelve 200 OK con "response" vacio y el motivo real dentro de
-    # "errors". Sin esto no hay forma de distinguir "0 partidos" de "el
-    # plan no deja consultar esto".
-    errores = cuerpo.get("errors")
-    if errores:
-        print(f"  -> temporada {temporada}: errors de la API: {errores}")
-
-    return cuerpo.get("response", [])
-
+# Junta TODOS los partidos de todas las ligas en una sola lista antes de
+# buscar los de nuestros equipos (asi un partido entre dos equipos de
+# interes, si lo hubiera, no sale duplicado).
+todos_los_partidos = []
+for liga in LIGAS_A_CONSULTAR:
+    try:
+        partidos = partidos_de_liga(liga, desde, hasta)
+        print(f"Liga {liga}: {len(partidos)} partidos en los proximos {RANGO_DIAS} dias")
+        todos_los_partidos.extend(partidos)
+    except requests.RequestException as e:
+        # Si una liga falla (la API no oficial se cae, cambia de forma, etc.)
+        # las demas ligas y equipos siguen intentandose igual.
+        print(f"ERROR consultando la liga '{liga}': {e}")
 
 eventos = []
-ahora_utc = datetime.now(ZoneInfo("UTC"))
 
 for equipo in EQUIPOS_INTERES:
-    try:
-        equipo_id = buscar_id_equipo(equipo)
-        if equipo_id is None:
-            print(f"AVISO: no se encontro el equipo '{equipo['nombre']}' (busqueda: '{equipo['busqueda']}')")
+    encontrados = 0
+    for partido in todos_los_partidos:
+        competidores = (partido.get("competitions") or [{}])[0].get("competitors", [])
+        if len(competidores) != 2:
             continue
 
-        # Se piden DOS temporadas (el año actual y el anterior) porque cada
-        # liga etiqueta sus temporadas distinto: las de calendario (MLS,
-        # Colombia) usan el año en curso, pero las europeas (La Liga) siguen
-        # llamandose con el año en que arrancaron hasta mayo/junio siguiente
-        # (ej. en enero de 2027 La Liga todavia es la temporada "2026"). Asi
-        # se cubren ambas convenciones sin tener que saber de antemano cual
-        # usa cada equipo.
-        anio_actual = datetime.now(ZONA).year
-        vistos = set()  # ids de partido, para no duplicar si sale en ambas consultas
-        partidos_futuros = []
+        nombres = [c.get("team", {}).get("displayName", "") for c in competidores]
+        coincide = [equipo["clave"] in n.lower() for n in nombres]
+        if not any(coincide):
+            continue
 
-        for temporada in (anio_actual, anio_actual - 1):
-            for partido in partidos_de_temporada(equipo_id, temporada):
-                fixture = partido.get("fixture", {})
-                fixture_id = fixture.get("id")
-                fecha_iso_utc = fixture.get("date")
-                if not fecha_iso_utc or fixture_id in vistos:
-                    continue
+        fecha_iso_utc = partido.get("date")  # ej: "2026-08-30T18:30Z"
+        if not fecha_iso_utc:
+            continue
+        momento_utc = datetime.fromisoformat(fecha_iso_utc.replace("Z", "+00:00"))
+        momento_madrid = momento_utc.astimezone(ZONA)
 
-                momento_utc = datetime.fromisoformat(fecha_iso_utc)
-                if momento_utc <= ahora_utc:
-                    continue  # ya se jugo (o esta en juego), no interesa
+        # El rival es "el otro" de los dos competidores encontrados.
+        idx_propio = coincide.index(True)
+        rival = nombres[1 - idx_propio]
 
-                vistos.add(fixture_id)
-                partidos_futuros.append((momento_utc, partido))
+        eventos.append({
+            "fecha": momento_madrid.date().isoformat(),
+            "tipo": "partido",
+            "nota": f"{equipo['nombre']} vs {rival}",
+            "hora": momento_madrid.strftime("%H:%M"),
+        })
+        encontrados += 1
 
-        partidos_futuros.sort(key=lambda par: par[0])
-        partidos_futuros = partidos_futuros[:MAX_PARTIDOS_POR_EQUIPO]
-        print(f"{equipo['nombre']} (id={equipo_id}): {len(partidos_futuros)} partidos proximos")
-
-        for momento_utc, partido in partidos_futuros:
-            equipos_partido = partido.get("teams", {})
-            momento_madrid = momento_utc.astimezone(ZONA)
-            fecha = momento_madrid.date().isoformat()
-            hora = momento_madrid.strftime("%H:%M")
-
-            local_id = equipos_partido.get("home", {}).get("id")
-            es_local = str(local_id) == str(equipo_id)
-            rival = (equipos_partido.get("away") if es_local else equipos_partido.get("home") or {}).get("name", "?")
-
-            nota = f"{equipo['nombre']} vs {rival}"
-            eventos.append({"fecha": fecha, "tipo": "partido", "nota": nota, "hora": hora})
-    except requests.RequestException as e:
-        # Si falla un equipo (limite de peticiones, id no encontrado, etc.) no se
-        # cae todo el script: simplemente ese equipo se queda sin partidos hoy.
-        print(f"ERROR con '{equipo['nombre']}': {e}")
+    print(f"{equipo['nombre']}: {encontrados} partidos proximos")
 
 eventos.sort(key=lambda e: (e["fecha"], e["hora"] or "00:00"))
 
