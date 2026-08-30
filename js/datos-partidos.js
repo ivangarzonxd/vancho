@@ -2,7 +2,6 @@
 // (se sobreescribe cada madrugada via GitHub Actions; no editar a mano, se perderia).
 // Mismo formato que datos-agenda.js: fecha (YYYY-MM-DD), tipo ('partido'), nota (texto), hora (HH:MM).
 const eventosPartidos = [
-  { fecha: "2026-08-30", tipo: "partido", nota: "Inter Miami vs CF Montréal", hora: "01:30" },
   { fecha: "2026-08-30", tipo: "partido", nota: "Real Madrid vs Málaga", hora: "17:00" },
   { fecha: "2026-08-31", tipo: "partido", nota: "Millonarios FC vs Internacional de Bogotá", hora: "01:15" },
   { fecha: "2026-08-31", tipo: "partido", nota: "Barcelona vs Rayo Vallecano", hora: "21:30" },
@@ -11,6 +10,8 @@ const eventosPartidos = [
   { fecha: "2026-09-06", tipo: "partido", nota: "Inter Miami vs Atlanta United FC", hora: "01:30" },
   { fecha: "2026-09-06", tipo: "partido", nota: "Barcelona vs Valencia", hora: "16:15" },
   { fecha: "2026-09-07", tipo: "partido", nota: "Millonarios FC vs Deportivo Pereira", hora: "01:10" },
+  { fecha: "2026-09-08", tipo: "partido", nota: "Real Madrid vs Internazionale", hora: "21:00" },
+  { fecha: "2026-09-09", tipo: "partido", nota: "Barcelona vs Feyenoord Rotterdam", hora: "18:45" },
   { fecha: "2026-09-10", tipo: "partido", nota: "Inter Miami vs Chicago Fire FC", hora: "02:30" },
   { fecha: "2026-09-13", tipo: "partido", nota: "Inter Miami vs Nashville SC", hora: "01:30" },
   { fecha: "2026-09-13", tipo: "partido", nota: "Real Madrid vs Rayo Vallecano", hora: "20:00" },
@@ -32,5 +33,8 @@ const eventosPartidos = [
   { fecha: "2026-10-11", tipo: "partido", nota: "Inter Miami vs D.C. United", hora: "01:30" },
   { fecha: "2026-10-11", tipo: "partido", nota: "Real Madrid vs Villarreal", hora: "20:00" },
   { fecha: "2026-10-11", tipo: "partido", nota: "Barcelona vs Getafe", hora: "20:00" },
+  { fecha: "2026-10-13", tipo: "partido", nota: "Barcelona vs Galatasaray", hora: "21:00" },
   { fecha: "2026-10-14", tipo: "partido", nota: "Millonarios FC vs Once Caldas", hora: "03:00" },
+  { fecha: "2026-10-14", tipo: "partido", nota: "Real Madrid vs AS Roma", hora: "21:00" },
+  { fecha: "2026-10-15", tipo: "partido", nota: "Inter Miami vs New York City FC", hora: "01:30" },
 ];
