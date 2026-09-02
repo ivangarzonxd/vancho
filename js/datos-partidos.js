@@ -34,4 +34,6 @@ const eventosPartidos = [
   { fecha: "2026-10-14", tipo: "partido", nota: "Millonarios FC vs Once Caldas", hora: "03:00" },
   { fecha: "2026-10-14", tipo: "partido", nota: "Real Madrid vs AS Roma", hora: "21:00" },
   { fecha: "2026-10-15", tipo: "partido", nota: "Inter Miami vs New York City FC", hora: "01:30" },
+  { fecha: "2026-10-17", tipo: "partido", nota: "Millonarios FC vs Jaguares de Córdoba", hora: "21:00" },
+  { fecha: "2026-10-18", tipo: "partido", nota: "Inter Miami vs Atlanta United FC", hora: "01:30" },
 ];
