@@ -2,7 +2,6 @@
 // (se sobreescribe cada madrugada via GitHub Actions; no editar a mano, se perderia).
 // Mismo formato que datos-agenda.js: fecha (YYYY-MM-DD), tipo ('partido'), nota (texto), hora (HH:MM).
 const eventosPartidos = [
-  { fecha: "2026-09-03", tipo: "partido", nota: "Millonarios FC vs Independiente Santa Fe", hora: "03:25" },
   { fecha: "2026-09-04", tipo: "partido", nota: "Real Madrid vs Real Betis", hora: "21:00" },
   { fecha: "2026-09-06", tipo: "partido", nota: "Inter Miami vs Atlanta United FC", hora: "01:30" },
   { fecha: "2026-09-06", tipo: "partido", nota: "Barcelona vs Valencia", hora: "16:15" },
@@ -10,6 +9,7 @@ const eventosPartidos = [
   { fecha: "2026-09-08", tipo: "partido", nota: "Real Madrid vs Internazionale", hora: "21:00" },
   { fecha: "2026-09-09", tipo: "partido", nota: "Barcelona vs Feyenoord Rotterdam", hora: "18:45" },
   { fecha: "2026-09-10", tipo: "partido", nota: "Inter Miami vs Chicago Fire FC", hora: "02:30" },
+  { fecha: "2026-09-11", tipo: "partido", nota: "Millonarios FC vs Deportivo Cali", hora: "03:00" },
   { fecha: "2026-09-12", tipo: "partido", nota: "Real Madrid vs Rayo Vallecano", hora: "21:00" },
   { fecha: "2026-09-13", tipo: "partido", nota: "Inter Miami vs Nashville SC", hora: "01:30" },
   { fecha: "2026-09-13", tipo: "partido", nota: "Barcelona vs Levante", hora: "16:15" },
@@ -36,4 +36,6 @@ const eventosPartidos = [
   { fecha: "2026-10-15", tipo: "partido", nota: "Inter Miami vs New York City FC", hora: "01:30" },
   { fecha: "2026-10-17", tipo: "partido", nota: "Millonarios FC vs Jaguares de Córdoba", hora: "21:00" },
   { fecha: "2026-10-18", tipo: "partido", nota: "Inter Miami vs Atlanta United FC", hora: "01:30" },
+  { fecha: "2026-10-18", tipo: "partido", nota: "Real Madrid vs Sevilla", hora: "20:00" },
+  { fecha: "2026-10-18", tipo: "partido", nota: "Barcelona vs Real Betis", hora: "20:00" },
 ];
