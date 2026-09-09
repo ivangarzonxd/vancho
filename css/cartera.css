@@ -1,0 +1,335 @@
+/* ================================================================
+   cartera.css
+   El boton "Cartera" vive dentro del cajon de pendientes (ver
+   #pendientes-otros-wrap en pendientes.js/css); todo lo demas de aqui
+   es el MODAL que se abre encima de toda la pagina, asi que no esta
+   atado a la cuadricula de cajones ni a ningun grid-column/grid-row.
+   ================================================================ */
+
+.cartera-boton {
+  margin-top: 0.4rem; /* separacion respecto a los datos de divisa/hora de arriba */
+  width: 100%;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--texto);
+  background: var(--bg-elemento);
+  border: 1px solid var(--borde);
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: var(--relieve-hundido); /* mismo relieve "hundido" que el resto de elementos internos */
+}
+
+.cartera-boton:hover {
+  color: var(--acento);
+}
+
+/* Fondo oscuro semitransparente detras del modal, cubre toda la pantalla */
+.cartera-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: none; /* oculto por defecto; el atributo "hidden" NO sirve aqui porque
+                     esta misma regla (con la misma especificidad) lo pisaria */
+  align-items: center;
+  justify-content: center;
+  padding: 1rem; /* para que el modal no toque los bordes en pantallas chicas */
+  z-index: 100;
+}
+
+/* Se agrega/quita por JS (ver abrirCartera()/cerrarCartera() en cartera.js) */
+.cartera-overlay.abierto {
+  display: flex;
+}
+
+/* La caja del modal en si: mismo lenguaje visual que un .cajon (fondo, borde,
+   bisel), pero flotando encima de todo en vez de vivir en la cuadricula. */
+.cartera-modal {
+  background: var(--bg-cajon);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  box-shadow:
+    inset 1.5px 1.5px 0 rgba(255, 255, 255, 0.28),
+    inset -1.5px -1.5px 0 rgba(0, 0, 0, 0.7);
+  padding: 1rem;
+  width: 100%;
+  max-width: 380px;
+  max-height: 85vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.cartera-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cartera-modal-header h2 {
+  font-size: 1.05rem;
+  color: var(--acento);
+}
+
+.cartera-cerrar {
+  background: none;
+  border: none;
+  color: var(--texto-secundario);
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 0.3rem;
+}
+
+.cartera-cerrar:hover {
+  color: var(--texto);
+}
+
+/* --- Pantalla de PIN --- */
+.cartera-pin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.cartera-pin-form input {
+  background: var(--bg-elemento);
+  border: 1px solid var(--borde);
+  box-shadow: var(--relieve-hundido);
+  border-radius: 8px;
+  padding: 0.5rem 0.6rem;
+  color: var(--texto);
+  font-size: 1rem;
+  letter-spacing: 0.2em; /* separa un poco los digitos del PIN, se lee mas facil */
+}
+
+.cartera-pin-form input:focus {
+  outline: 1px solid var(--acento);
+}
+
+.cartera-pin-form button,
+.cartera-agregar-form button {
+  background: var(--acento);
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem;
+  color: var(--bg-cajon-2);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.cartera-error {
+  color: #ff8a8a; /* rojo suave, legible sobre el fondo oscuro sin ser agresivo */
+  font-size: 0.85rem;
+}
+
+/* --- Saldo --- */
+.cartera-saldo {
+  text-align: center;
+  padding: 0.7rem;
+  border-radius: 10px;
+  background: var(--bg-elemento);
+  box-shadow: var(--relieve-hundido);
+}
+
+.cartera-saldo-frase {
+  font-size: 0.85rem;
+  color: var(--texto-secundario);
+}
+
+.cartera-saldo-monto {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-top: 0.1rem;
+}
+
+.cartera-saldo-monto.a-favor { color: #6fd88a; } /* te deben: verde suave */
+.cartera-saldo-monto.en-contra { color: #ff8a8a; } /* debes: rojo suave */
+.cartera-saldo-monto.en-paz { color: var(--texto-secundario); }
+
+/* --- Formulario para agregar un movimiento --- */
+.cartera-agregar-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  border-top: 1px solid var(--borde);
+  padding-top: 0.6rem;
+}
+
+/* 4 opciones (2 filas x 2 columnas): arriba "deuda nueva" (una direccion en
+   cada columna), abajo "pago/abono" (mismas dos direcciones). Con flex se
+   hubieran visto muy angostas al ser 4 en vez de 2. */
+.cartera-direccion {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.4rem;
+}
+
+.cartera-direccion label {
+  text-align: center;
+  padding: 0.4rem;
+  border-radius: 8px;
+  background: var(--bg-elemento);
+  box-shadow: var(--relieve-hundido);
+  font-size: 0.78rem;
+  cursor: pointer;
+  color: var(--texto-secundario);
+}
+
+.cartera-direccion input {
+  display: none; /* los radios reales quedan ocultos, se usa el label como boton */
+}
+
+.cartera-direccion input:checked + span {
+  color: var(--texto);
+  font-weight: 700;
+}
+
+.cartera-agregar-form input[type="number"],
+.cartera-agregar-form input[type="text"] {
+  background: var(--bg-elemento);
+  border: 1px solid var(--borde);
+  box-shadow: var(--relieve-hundido);
+  border-radius: 8px;
+  padding: 0.5rem 0.6rem;
+  color: var(--texto);
+  font-size: 0.95rem;
+}
+
+/* --- Historial --- */
+.cartera-historial {
+  border-top: 1px solid var(--borde);
+  padding-top: 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.cartera-mov {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--bg-elemento);
+  box-shadow: var(--relieve-hundido);
+  border-radius: 8px;
+  padding: 0.4rem 0.55rem;
+  font-size: 0.82rem;
+}
+
+.cartera-mov-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.cartera-mov-nota {
+  color: var(--texto);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Tag chico "Deuda"/"Pago": distingue el TIPO de movimiento aunque el signo
+   del monto sea el mismo (ver CARTERA_DIRECCIONES en cartera.js). */
+.cartera-mov-tipo {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 0.05rem 0.35rem;
+  border-radius: 999px;
+  margin-right: 0.35rem;
+  vertical-align: middle;
+}
+
+.cartera-mov-tipo.tipo-deuda {
+  background: rgba(255, 138, 138, 0.15);
+  color: #ff8a8a;
+}
+
+.cartera-mov-tipo.tipo-pago {
+  background: rgba(111, 216, 138, 0.15);
+  color: #6fd88a;
+}
+
+.cartera-mov-fecha {
+  color: var(--texto-secundario);
+  font-size: 0.72rem;
+}
+
+.cartera-mov-monto {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.cartera-mov-monto.a-favor { color: #6fd88a; }
+.cartera-mov-monto.en-contra { color: #ff8a8a; }
+
+.cartera-mov-borrar {
+  background: none;
+  border: none;
+  color: var(--texto-secundario);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0 0.2rem;
+}
+
+.cartera-mov-borrar:hover {
+  color: #ff8a8a;
+}
+
+.cartera-vacio {
+  color: var(--texto-secundario);
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+/* --- Selector de cuentas (pestañas por persona) --- */
+.cartera-cuentas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
+}
+
+.cartera-cuenta-unica {
+  font-weight: 700;
+  color: var(--texto);
+  font-size: 0.9rem;
+}
+
+.cartera-cuenta-pestaña {
+  background: var(--bg-elemento);
+  box-shadow: var(--relieve-hundido);
+  border: none;
+  border-radius: 999px;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.78rem;
+  color: var(--texto-secundario);
+  cursor: pointer;
+}
+
+.cartera-cuenta-pestaña.activa {
+  color: var(--bg-cajon-2);
+  background: var(--acento);
+  box-shadow: none;
+  font-weight: 700;
+}
+
+.cartera-cuenta-mas {
+  background: none;
+  border: 1px dashed var(--borde);
+  border-radius: 999px;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.78rem;
+  color: var(--texto-secundario);
+  cursor: pointer;
+  margin-left: auto; /* lo empuja al extremo derecho de la fila */
+}
+
+.cartera-cuenta-mas:hover {
+  color: var(--acento);
+  border-color: var(--acento);
+}

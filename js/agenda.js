@@ -46,7 +46,11 @@ const tituloMes = mesesVistos.join(" - ");
 // Emoji de cada evento, segun su tipo.
 function emojiTipo(tipo) {
   switch (tipo) {
-    case "trabajo": return "☎️"; // turnos de trabajo (logo de tu empresa)
+    case "trabajo": return "☎️"; // turnos de trabajo, formato antiguo (por si queda alguno en Calendar)
+    case "oficina": return "🏢"; // turno de trabajo en la oficina
+    case "casa": return "🏠"; // turno de trabajo desde casa
+    case "libre": return "👍"; // dia libre del turno de trabajo
+    case "vacaciones": return "✈️"; // vacaciones
     case "evento": return "📌"; // eventos normales de Calendar
     case "festivo": return "🎉"; // festivos de datos-festivos.js
     case "partido": return "⚽"; // partidos de futbol

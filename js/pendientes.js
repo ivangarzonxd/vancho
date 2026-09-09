@@ -185,6 +185,7 @@ async function cargarDivisaHora() {
     <div class="otros-contenido">
       <div class="otros-item">1 EUR = ${valorCambio}</div>
       <div class="otros-item"><span id="otros-hora">${horaColombiaTexto()}</span> Colombia</div>
+      <button id="cartera-btn" class="cartera-boton">💰 Cartera</button>
     </div>
   `;
 
@@ -197,4 +198,4 @@ async function cargarDivisaHora() {
 }
 
 cargarPendientes();
-cargarDivisaHora();
+cargarDivisaHora().then(inicializarCartera);
