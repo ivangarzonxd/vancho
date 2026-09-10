@@ -2,8 +2,6 @@
 // (se sobreescribe cada madrugada via GitHub Actions; no editar a mano, se perderia).
 // Mismo formato que datos-agenda.js: fecha (YYYY-MM-DD), tipo ('partido'), nota (texto), hora (HH:MM).
 const eventosPartidos = [
-  { fecha: "2026-09-09", tipo: "partido", nota: "Barcelona vs Feyenoord Rotterdam", hora: "18:45" },
-  { fecha: "2026-09-10", tipo: "partido", nota: "Inter Miami vs Chicago Fire FC", hora: "02:30" },
   { fecha: "2026-09-11", tipo: "partido", nota: "Millonarios FC vs Deportivo Cali", hora: "03:00" },
   { fecha: "2026-09-12", tipo: "partido", nota: "Real Madrid vs Rayo Vallecano", hora: "21:00" },
   { fecha: "2026-09-13", tipo: "partido", nota: "Inter Miami vs Nashville SC", hora: "01:30" },
@@ -37,4 +35,6 @@ const eventosPartidos = [
   { fecha: "2026-10-21", tipo: "partido", nota: "Millonarios FC vs Once Caldas", hora: "01:30" },
   { fecha: "2026-10-21", tipo: "partido", nota: "Real Madrid vs RB Leipzig", hora: "21:00" },
   { fecha: "2026-10-24", tipo: "partido", nota: "Inter Miami vs Red Bull New York", hora: "23:30" },
+  { fecha: "2026-10-25", tipo: "partido", nota: "Real Madrid vs Barcelona", hora: "19:00" },
+  { fecha: "2026-10-25", tipo: "partido", nota: "Barcelona vs Real Madrid", hora: "19:00" },
 ];
