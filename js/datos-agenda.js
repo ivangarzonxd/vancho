@@ -2,7 +2,6 @@
 // (se sobreescribe cada madrugada via GitHub Actions; no editar a mano, se perderia).
 // Cada evento: fecha (YYYY-MM-DD), tipo (trabajo/evento/tarea/...), nota (texto), hora (HH:MM o null).
 const eventosCalendario = [
-  { fecha: "2026-09-10", tipo: "casa", nota: "Casa", hora: "16:00" },
   { fecha: "2026-09-11", tipo: "libre", nota: "Libre", hora: null },
   { fecha: "2026-09-12", tipo: "casa", nota: "Casa", hora: "15:30" },
   { fecha: "2026-09-13", tipo: "casa", nota: "Casa", hora: "15:30" },
